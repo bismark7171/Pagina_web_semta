@@ -1,6 +1,7 @@
 export const siteDetails = {
   siteName: "SEMTA",
-  siteUrl: "https://semta.org.bo",
+  // En producción cambiar a https://semta.org.bo cuando tengas dominio propio
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pagina-web-semta.vercel.app",
   metadata: {
     title: "SEMTA · Siembra de Resiliencia Agroecológica en Bolivia",
     description:
