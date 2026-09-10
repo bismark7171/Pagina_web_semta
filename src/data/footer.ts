@@ -1,37 +1,39 @@
-import { IMenuItem, ISocials } from "@/types";
-
-export const footerDetails: {
-    subheading: string;
-    quickLinks: IMenuItem[];
-    email: string;
-    telephone: string;
-    socials: ISocials;
-} = {
-    subheading: "Empowering businesses with cutting-edge financial technology solutions.",
-    quickLinks: [
-        {
-            text: "Features",
-            url: "#features"
-        },
-        {
-            text: "Pricing",
-            url: "#pricing"
-        },
-        {
-            text: "Testimonials",
-            url: "#testimonials"
-        }
-    ],
-    email: 'address@yoursite.com',
-    telephone: '+1 (123) 456-7890',
-    socials: {
-        // github: 'https://github.com',
-        // x: 'https://twitter.com/x',
-        twitter: 'https://twitter.com/Twitter',
-        facebook: 'https://facebook.com',
-        // youtube: 'https://youtube.com',
-        linkedin: 'https://www.linkedin.com',
-        // threads: 'https://www.threads.net',
-        instagram: 'https://www.instagram.com',
-    }
-}
+export const footerData = {
+  subheading:
+    "Servicios Múltiples de Tecnologías Apropiadas. Construimos resiliencia agroecológica y seguridad hídrica con las comunidades del Altiplano y Valles de Bolivia desde 1982.",
+  columnas: [
+    {
+      titulo: "Institucional",
+      items: [
+        { label: "Nosotros", href: "/nosotros" },
+        { label: "Casa SEMTA", href: "/casa-semta" },
+        { label: "Verificar Certificado", href: "/verificar-certificado" },
+        { label: "Transparencia", href: "/transparencia" },
+      ],
+    },
+    {
+      titulo: "Programas",
+      items: [
+        { label: "Agua y Suelo", href: "/#agua-y-suelo" },
+        { label: "Agroecología", href: "/#agroecologia" },
+        { label: "Forraje y Ganadería", href: "/#forraje-y-ganaderia" },
+        { label: "Proyectos", href: "/proyectos" },
+      ],
+    },
+    {
+      titulo: "Recursos",
+      items: [
+        { label: "Biblioteca Digital", href: "/biblioteca" },
+        { label: "Pasantías 340h", href: "/pasantias" },
+        { label: "Bolsa de Noticias", href: "/noticias" },
+        { label: "Contacto", href: "/contacto" },
+      ],
+    },
+  ],
+  contacto: {
+    email: "info@semta.org.bo",
+    telefono: "+591 2 241 2345",
+    direccion: "Calle Alfredo Ascarrunz N° 2675, Sopocachi, La Paz, Bolivia",
+    horario: "Lun a Vie: 08:30 - 18:00",
+  },
+};

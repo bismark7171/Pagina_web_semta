@@ -1,46 +1,21 @@
-import Hero from "@/components/Hero";
-import Testimonials from "@/components/Testimonials";
-import Pricing from "@/components/Pricing/Pricing";
-import FAQ from "@/components/FAQ";
-import Logos from "@/components/Logos";
-import Benefits from "@/components/Benefits/Benefits";
-import Container from "@/components/Container";
-import Section from "@/components/Section";
-import Stats from "@/components/Stats";
-import CTA from "@/components/CTA";
+import HeroSlider from "@/components/home/HeroSlider";
+import ImpactMetrics from "@/components/home/ImpactMetrics";
+import LineasDeAccion from "@/components/home/LineasDeAccion";
+import PhotoEssay from "@/components/home/PhotoEssay";
+import DualCallout from "@/components/home/DualCallout";
+import Transparencia from "@/components/home/Transparencia";
+import HomeCta from "@/components/home/HomeCta";
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   return (
     <>
-      <Hero />
-      <Logos />
-      <Container>
-        <Benefits />
-
-        <Section
-          id="pricing"
-          title="Pricing"
-          description="Simple, transparent pricing. No surprises."
-        >
-          <Pricing />
-        </Section>
-
-        <Section
-          id="testimonials"
-          title="What Our Clients Say"
-          description="Hear from those who have partnered with us."
-        >
-          <Testimonials />
-        </Section>
-
-        <FAQ />
-
-        <Stats />
-        
-        <CTA />
-      </Container>
+      <HeroSlider />
+      <ImpactMetrics />
+      <LineasDeAccion />
+      <PhotoEssay />
+      <DualCallout />
+      <Transparencia />
+      <HomeCta />
     </>
   );
-};
-
-export default HomePage;
+}

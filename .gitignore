@@ -24,9 +24,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -34,3 +36,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dev server logs
+.dev*.log
+.dev*.err.log
+
+# carpeta de extracción y portal HTML crudo (solo referencia, no código fuente)
+/_extracted/
+/stitch_semta_headless_next.js_portal/
