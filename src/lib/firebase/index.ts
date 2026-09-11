@@ -1,10 +1,15 @@
 /**
  * Punto de entrada único para toda la capa Firebase.
- * Importar desde aquí: import { getAllProjects, getMunicipios } from "@/lib/firebase"
+ *
+ * CLIENT (browser):  import { getAllProjects } from "@/lib/firebase"
+ * SERVER (Next.js):  import { adminGetAllProjects } from "@/lib/firebase/adminProjectService"
  */
 
 export { db }                     from "./config";
 export type { FirestoreProject }  from "./projectService";
+
+// Admin (solo servidor — NO importar en Client Components)
+export { adminGetAllProjects, adminGetProjectById, adminGetFinanciadores, adminGetMunicipios, adminGetTiposProyecto } from "./adminProjectService";
 export {
   getAllProjects,
   getProjectById,
