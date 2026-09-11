@@ -24,11 +24,15 @@ export default function ProjectsFilter({
   filtros,
   onChange,
   total,
+  municipios,
 }: {
   filtros: Filtros;
   onChange: (f: Filtros) => void;
   total: number;
+  /** Lista dinámica de municipios — si no se pasa usa la lista estática */
+  municipios?: string[];
 }) {
+  const listaMunicipios = municipios && municipios.length > 0 ? municipios : municipiosProyecto;
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
@@ -89,7 +93,7 @@ export default function ProjectsFilter({
             aria-label="Filtrar por municipio"
           >
             <option value="Todos">Todos los municipios</option>
-            {municipiosProyecto.map((m) => (
+            {listaMunicipios.map((m) => (
               <option key={m} value={m}>
                 {m}
               </option>

@@ -1,10 +1,16 @@
 import { quickStats } from "@/data/quickStats";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 
-export default function ProjectsStats() {
+export default function ProjectsStats({ total }: { total?: number }) {
+  // Si se pasa total real de Firestore, actualizar el stat correspondiente
+  const stats = quickStats.map((s) =>
+    s.label === "Total Registrados" && total !== undefined
+      ? { ...s, valor: String(total) }
+      : s,
+  );
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {quickStats.map((s) => (
+      {stats.map((s) => (
         <div
           key={s.label}
           className="flex items-start gap-4 rounded-2xl border border-outline-variant bg-surface-container-lowest p-6"
