@@ -1,0 +1,33 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PRE-PUSH HOOK — SEMTA Web
+# Se ejecuta automáticamente antes de cada `git push`.
+#
+# CAPA 2: La barrera más importante antes de producción.
+# Si falla → el push se cancela. Nada roto llega a GitHub/Vercel.
+#
+# Qué hace:
+#   1. Tests completos (177 tests — detecta regresiones)
+#   2. Build de Next.js — si hay error de "use client", CSS roto, imports
+#      faltantes, etc., el build falla aquí ANTES de llegar a Vercel.
+#
+# ESTE HOOK habría detectado el bug de "use client" antes del commit
+# que rompió el sitio en producción.
+# ─────────────────────────────────────────────────────────────────────────────
+
+echo "🧪 [pre-push] Corriendo tests..."
+npm run test
+
+if [ $? -ne 0 ]; then
+  echo "❌ [pre-push] Tests fallaron. Push cancelado."
+  exit 1
+fi
+
+echo "🏗️  [pre-push] Verificando build de producción..."
+npm run build
+
+if [ $? -ne 0 ]; then
+  echo "❌ [pre-push] Build falló. Push cancelado."
+  exit 1
+fi
+
+echo "✅ [pre-push] Tests y build OK. Subiendo a GitHub..."

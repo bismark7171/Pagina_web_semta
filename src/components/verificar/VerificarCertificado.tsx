@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { cn } from "@/lib/utils";
@@ -18,10 +19,12 @@ export default function VerificarCertificado() {
     ev.preventDefault();
     const limpio = codigo.trim().toUpperCase();
     if (!limpio) {
+      toast.warning("Ingresá un código para verificar.");
       setResultado({ tipo: "vacio" });
       return;
     }
     if (limpio.startsWith("SEMTA-") && limpio.length >= 12) {
+      toast.success("Certificado válido", { description: limpio });
       setResultado({
         tipo: "valido",
         emitido: "Casa SEMTA · La Paz",
@@ -29,6 +32,7 @@ export default function VerificarCertificado() {
         programa: `Programa de formación verificado · 340 horas`,
       });
     } else {
+      toast.error("Código no encontrado", { description: "Verifica que el código esté completo." });
       setResultado({ tipo: "invalido" });
     }
   };
@@ -46,8 +50,8 @@ export default function VerificarCertificado() {
           Código del certificado
         </label>
         <p className="mb-4 text-body-sm text-on-surface-variant">
-          Ingresa el código QR que figura en tu certificado físico o digital,
-          por ejemplo: SEMTA-2026-0042.
+          Ingresa el código QR que figura en tu certificado físico o digital, por ejemplo:
+          SEMTA-2026-0042.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
@@ -75,15 +79,11 @@ export default function VerificarCertificado() {
             <p className="text-label-caps uppercase tracking-wider text-primary">
               Certificado válido
             </p>
-            <p className="mt-1 font-headline-md text-on-surface">
-              Documento autenticado por SEMTA
-            </p>
+            <p className="mt-1 font-headline-md text-on-surface">Documento autenticado por SEMTA</p>
             <dl className="mt-3 space-y-1 text-body-sm text-on-surface-variant">
               <dt className="font-semibold text-on-surface">Código</dt>
               <dd>{resultado.titular}</dd>
-              <dt className="mt-2 font-semibold text-on-surface">
-                Programa
-              </dt>
+              <dt className="mt-2 font-semibold text-on-surface">Programa</dt>
               <dd>{resultado.programa}</dd>
               <dt className="mt-2 font-semibold text-on-surface">Emisión</dt>
               <dd>{resultado.emitido}</dd>
@@ -98,9 +98,7 @@ export default function VerificarCertificado() {
             <MaterialIcon name="gpp_bad" className="text-[26px]" />
           </span>
           <div>
-            <p className="font-headline-md text-on-surface">
-              Código no encontrado
-            </p>
+            <p className="font-headline-md text-on-surface">Código no encontrado</p>
             <p className="mt-1 text-body-sm text-on-surface-variant">
               Verifica que el código esté completo o escribe a{" "}
               <a

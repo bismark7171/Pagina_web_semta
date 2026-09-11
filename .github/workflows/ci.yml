@@ -1,0 +1,117 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CI — SEMTA Web
+# GitHub Actions: se ejecuta en cada push y pull request a main.
+#
+# CAPA 3: Servidor limpio, independiente de tu máquina local.
+# Bloquea el merge si algún job falla.
+#
+# Jobs (paralelos para velocidad):
+#   ① typecheck  → tsc --noEmit
+#   ② lint       → next lint
+#   ③ test       → vitest run (177 tests)
+#   ④ build      → next build (valida que el sitio compila en producción)
+#
+# Por qué 4 jobs separados:
+#   - Ves exactamente QUÉ falló (tipos / lint / tests / build)
+#   - Se ejecutan en paralelo → feedback en ~2 minutos
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ── ① TypeScript ────────────────────────────────────────────────────────────
+  typecheck:
+    name: "① TypeScript"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar tipos TypeScript
+        run: npx tsc --noEmit
+
+  # ── ② ESLint ────────────────────────────────────────────────────────────────
+  lint:
+    name: "② ESLint"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+  # ── ③ Tests ─────────────────────────────────────────────────────────────────
+  test:
+    name: "③ Tests (177)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Correr tests
+        run: npm test
+
+  # ── ④ Build ─────────────────────────────────────────────────────────────────
+  # Este job detecta exactamente el bug de "use client" faltante:
+  # Next.js build falla con: "You're importing a component that needs useState.
+  # It only works in a Client Component but none of its parents are marked
+  # with 'use client'."
+  build:
+    name: "④ Build producción"
+    runs-on: ubuntu-latest
+    env:
+      # Variables mínimas para que Next.js build no falle por env vars faltantes
+      NEXT_PUBLIC_FIREBASE_API_KEY: "ci-placeholder"
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "ci-placeholder.firebaseapp.com"
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: "ci-placeholder"
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "ci-placeholder.appspot.com"
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
+      NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:placeholder"
+      NEXT_PUBLIC_SITE_URL: "https://pagina-web-semta.vercel.app"
+      FIREBASE_PROJECT_ID: "ci-placeholder"
+      FIREBASE_CLIENT_EMAIL: "ci@ci-placeholder.iam.gserviceaccount.com"
+      FIREBASE_PRIVATE_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build Next.js
+        run: npm run build

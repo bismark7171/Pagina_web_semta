@@ -1,0 +1,22 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PRE-COMMIT HOOK — SEMTA Web
+# Se ejecuta automáticamente antes de cada `git commit`.
+#
+# CAPA 1: Verifica solo los archivos que estás por commitear.
+# Si falla → el commit se cancela y ves el error.
+#
+# Qué hace:
+#   1. lint-staged → Prettier (formato) + ESLint en archivos .ts/.tsx staged
+#   2. tsc --noEmit → Verifica TypeScript en TODO el proyecto
+#      (necesario porque un cambio en un archivo puede romper otro)
+# ─────────────────────────────────────────────────────────────────────────────
+
+echo "🔍 [pre-commit] Verificando formato y tipos..."
+
+# 1. Lint + formato solo en archivos staged
+npx lint-staged
+
+# 2. TypeScript check completo (detecta "use client" faltante, tipos rotos, etc.)
+npx tsc --noEmit
+
+echo "✅ [pre-commit] Todo limpio. Commiteando..."

@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { IProject } from "@/types";
-import { proyectoEstados } from "@/data/projects";
 import ProjectsFilter, { type Filtros } from "./ProjectsFilter";
 import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
@@ -30,7 +29,7 @@ export default function ProjectsExplorer({ projects, municipios }: Props) {
   // Construir lista dinámica de municipios únicos desde los proyectos
   const municipiosList = useMemo(() => {
     if (municipios && municipios.length > 0) return municipios;
-    return [...new Set(projects.map((p) => p.municipio))].sort();
+    return Array.from(new Set(projects.map((p) => p.municipio))).sort();
   }, [projects, municipios]);
 
   const filtrados = useMemo(() => {
@@ -39,7 +38,8 @@ export default function ProjectsExplorer({ projects, municipios }: Props) {
       if (filtros.estado !== "Todos" && p.estado !== filtros.estado) return false;
       if (filtros.tipo !== "Todos" && p.tipo !== filtros.tipo) return false;
       if (filtros.municipio !== "Todos" && p.municipio !== filtros.municipio) return false;
-      if (q && !p.search.toLowerCase().includes(q) && !p.titulo.toLowerCase().includes(q)) return false;
+      if (q && !p.search.toLowerCase().includes(q) && !p.titulo.toLowerCase().includes(q))
+        return false;
       return true;
     });
   }, [filtros, projects]);
@@ -60,7 +60,8 @@ export default function ProjectsExplorer({ projects, municipios }: Props) {
           </span>
           <h3 className="mt-4 font-headline-md text-on-surface">Sin resultados</h3>
           <p className="mt-1 max-w-sm text-body-sm text-on-surface-variant">
-            No encontramos proyectos con esos filtros. Intenta ampliar la búsqueda o limpiar los criterios.
+            No encontramos proyectos con esos filtros. Intenta ampliar la búsqueda o limpiar los
+            criterios.
           </p>
           <button
             type="button"

@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import { proyectoEstados } from "@/data/projects";
 import type { IProject } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { FALLBACK_IMAGE } from "@/lib/images";
 
 export default function ProjectCard({
   project,
@@ -11,25 +15,24 @@ export default function ProjectCard({
   onOpen: () => void;
 }) {
   const estado = proyectoEstados[project.estado];
+  const [imagen, setImagen] = useState(project.imagen);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
       <div className="relative aspect-[16/9] overflow-hidden bg-surface-container-high">
         <Image
-          src={project.imagen}
+          src={imagen}
           alt={project.alt}
           fill
           sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
           className="object-cover"
+          onError={() => setImagen(FALLBACK_IMAGE)}
         />
         <span
           className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label-md font-semibold"
           style={{ backgroundColor: estado.tint, color: estado.color }}
         >
-          <span
-            className="size-1.5 rounded-full"
-            style={{ backgroundColor: estado.color }}
-          />
+          <span className="size-1.5 rounded-full" style={{ backgroundColor: estado.color }} />
           {project.estado}
         </span>
       </div>
@@ -38,9 +41,7 @@ export default function ProjectCard({
         <p className="text-label-caps uppercase tracking-wider text-on-surface-variant">
           {project.municipio} · {project.gestion}
         </p>
-        <h3 className="mt-2 font-headline-md leading-snug text-on-surface">
-          {project.titulo}
-        </h3>
+        <h3 className="mt-2 font-headline-md leading-snug text-on-surface">{project.titulo}</h3>
         <p className="mt-2 line-clamp-2 text-body-sm leading-relaxed text-on-surface-variant">
           {project.descripcion}
         </p>

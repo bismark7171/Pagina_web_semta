@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingChat from "@/components/layout/FloatingChat";
+import { BackToTop } from "@/components/layout/BackToTop";
 import { siteDetails } from "@/data/siteDetails";
 
 import "./globals.css";
@@ -49,9 +51,7 @@ export const metadata: Metadata = {
     description: siteDetails.metadata.description,
     images: ["/images/twitter-image.jpg"],
   },
-  other: {
-    "material-symbols": "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap",
-  },
+  other: {},
 };
 
 export const viewport: Viewport = {
@@ -85,16 +85,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${plusJakartaSans.variable} ${inter.variable}`}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Material Symbols — fuente de iconos global, necesaria en todas las rutas */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        />
-      </head>
+      <head>{/* Material Symbols CDN eliminado — ahora se usa Lucide React SVG inline */}</head>
       <body className="antialiased">
         <a
           href="#main-content"
@@ -106,6 +97,8 @@ export default function RootLayout({
         <main id="main-content">{children}</main>
         <Footer />
         <FloatingChat />
+        <BackToTop />
+        <Toaster position="bottom-right" richColors toastOptions={{ className: "font-body" }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

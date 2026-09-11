@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import CasaHero from "@/components/casa-semta/CasaHero";
 import ServicioCard from "@/components/casa-semta/ServicioCard";
 import CasaFaq from "@/components/casa-semta/CasaFaq";
+import GaleriaEspacios from "@/components/casa-semta/GaleriaEspacios";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Button } from "@/components/ui/Button";
 import { casaSemtaServicios, casaSemtaPhotogrid } from "@/data/casaSemta";
@@ -14,8 +14,6 @@ export const metadata: Metadata = {
 };
 
 export default function CasaSemtaPage() {
-  const [fotoPrincipal, ...gridFotos] = casaSemtaPhotogrid;
-
   return (
     <>
       <CasaHero />
@@ -26,12 +24,10 @@ export default function CasaSemtaPage() {
             <div className="max-w-xl">
               <SectionLabel icono="handyman">Qué Ofrecemos</SectionLabel>
               <h2 className="mt-4 font-headline-xl text-on-surface">
-                Cuatro formas de{" "}
-                <span className="text-primary">vivir la agroecología</span>
+                Cuatro formas de <span className="text-primary">vivir la agroecología</span>
               </h2>
               <p className="mt-3 text-body-lg text-on-surface-variant">
-                Todos los servicios financian nuestros programas de campo en el
-                Altiplano y Valles.
+                Todos los servicios financian nuestros programas de campo en el Altiplano y Valles.
               </p>
             </div>
           </div>
@@ -49,39 +45,16 @@ export default function CasaSemtaPage() {
           <div className="max-w-xl">
             <SectionLabel icono="photo_camera">El Espacio</SectionLabel>
             <h2 className="mt-4 font-headline-xl text-on-surface">
-              Patio bioclimático en el{" "}
-              <span className="text-primary">corazón de Sopocachi</span>
+              Patio bioclimático en el <span className="text-primary">corazón de Sopocachi</span>
             </h2>
             <p className="mt-3 text-body-lg text-on-surface-variant">
-              Recorre en imágenes los espacios que reciben a cooperantes,
-              organizaciones sociales y vecinas y vecinos de La Paz.
+              Recorre en imágenes los espacios que reciben a cooperantes, organizaciones sociales y
+              vecinas y vecinos de La Paz.
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-2">
-            <figure className="relative col-span-2 row-span-2 aspect-square overflow-hidden rounded-3xl md:aspect-auto">
-              <Image
-                src={fotoPrincipal.imagen}
-                alt={fotoPrincipal.alt}
-                fill
-                sizes="(min-width:768px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </figure>
-            {gridFotos.map((f) => (
-              <figure
-                key={f.imagen}
-                className="relative aspect-square overflow-hidden rounded-2xl"
-              >
-                <Image
-                  src={f.imagen}
-                  alt={f.alt}
-                  fill
-                  sizes="(min-width:768px) 25vw, 50vw"
-                  className="object-cover"
-                />
-              </figure>
-            ))}
+          <div className="mt-12">
+            <GaleriaEspacios fotos={casaSemtaPhotogrid} />
           </div>
         </div>
       </section>
@@ -92,8 +65,7 @@ export default function CasaSemtaPage() {
             <div className="max-w-xl">
               <SectionLabel icono="quiz">Preguntas Frecuentes</SectionLabel>
               <h2 className="mt-4 font-headline-xl text-on-surface">
-                Antes de tu visita,{" "}
-                <span className="text-primary">resolvemos dudas</span>
+                Antes de tu visita, <span className="text-primary">resolvemos dudas</span>
               </h2>
             </div>
           </div>

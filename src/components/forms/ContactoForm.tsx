@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 
@@ -27,11 +28,14 @@ export default function ContactoForm({
     mensaje: "",
   });
 
-  const set = (campo: keyof typeof form) => (ev: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [campo]: ev.target.value }));
+  const set =
+    (campo: keyof typeof form) =>
+    (ev: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((f) => ({ ...f, [campo]: ev.target.value }));
 
   const submit = (ev: React.FormEvent) => {
     ev.preventDefault();
+    toast.success("Mensaje enviado", { description: "Te responderemos a la brevedad." });
     setSent(true);
   };
 
@@ -42,9 +46,7 @@ export default function ContactoForm({
           <MaterialIcon name="check" className="text-[32px]" />
         </span>
         <h3 className="mt-5 font-headline-md text-on-surface">¡Gracias!</h3>
-        <p className="mt-2 max-w-sm text-body-md text-on-surface-variant">
-          {successText}
-        </p>
+        <p className="mt-2 max-w-sm text-body-md text-on-surface-variant">{successText}</p>
         <button
           type="button"
           onClick={() => setSent(false)}
@@ -62,7 +64,10 @@ export default function ContactoForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="cf-nombre" className="mb-1.5 block text-label-md font-semibold text-on-surface">
+          <label
+            htmlFor="cf-nombre"
+            className="mb-1.5 block text-label-md font-semibold text-on-surface"
+          >
             Nombre completo *
           </label>
           <input
@@ -75,7 +80,10 @@ export default function ContactoForm({
           />
         </div>
         <div>
-          <label htmlFor="cf-email" className="mb-1.5 block text-label-md font-semibold text-on-surface">
+          <label
+            htmlFor="cf-email"
+            className="mb-1.5 block text-label-md font-semibold text-on-surface"
+          >
             Correo electrónico *
           </label>
           <input
@@ -92,7 +100,10 @@ export default function ContactoForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="cf-telefono" className="mb-1.5 block text-label-md font-semibold text-on-surface">
+          <label
+            htmlFor="cf-telefono"
+            className="mb-1.5 block text-label-md font-semibold text-on-surface"
+          >
             Teléfono
           </label>
           <input
@@ -105,15 +116,13 @@ export default function ContactoForm({
           />
         </div>
         <div>
-          <label htmlFor="cf-asunto" className="mb-1.5 block text-label-md font-semibold text-on-surface">
+          <label
+            htmlFor="cf-asunto"
+            className="mb-1.5 block text-label-md font-semibold text-on-surface"
+          >
             Asunto
           </label>
-          <select
-            id="cf-asunto"
-            value={form.asunto}
-            onChange={set("asunto")}
-            className={inputCls}
-          >
+          <select id="cf-asunto" value={form.asunto} onChange={set("asunto")} className={inputCls}>
             <option>Consulta general</option>
             <option>Alianzas y cooperación</option>
             <option>Reserva de espacios</option>
@@ -125,7 +134,10 @@ export default function ContactoForm({
       </div>
 
       <div>
-        <label htmlFor="cf-mensaje" className="mb-1.5 block text-label-md font-semibold text-on-surface">
+        <label
+          htmlFor="cf-mensaje"
+          className="mb-1.5 block text-label-md font-semibold text-on-surface"
+        >
           Mensaje *
         </label>
         <textarea

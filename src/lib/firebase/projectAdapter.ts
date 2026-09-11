@@ -9,34 +9,35 @@
 
 import type { FirestoreProject } from "./projectService";
 import type { IProject, ProjectEstado, ProjectTipo } from "@/types";
+import { normalizeImageUrl, FALLBACK_IMAGE } from "@/lib/images";
 
 // Mapeo de estados Firestore → estados UI
 const estadoMap: Record<string, ProjectEstado> = {
-  PLANIFICADO:    "Planificado",
-  EN_EJECUCION:   "En Ejecución",
-  CONCLUIDO:      "Concluido",
-  SUSPENDIDO:     "Suspendido",
-  CANCELADO:      "Cancelado",
+  PLANIFICADO: "Planificado",
+  EN_EJECUCION: "En Ejecución",
+  CONCLUIDO: "Concluido",
+  SUSPENDIDO: "Suspendido",
+  CANCELADO: "Cancelado",
   // Por si vienen en formato legible directamente
-  "Planificado":  "Planificado",
+  Planificado: "Planificado",
   "En Ejecución": "En Ejecución",
-  "Concluido":    "Concluido",
-  "Suspendido":   "Suspendido",
-  "Cancelado":    "Cancelado",
+  Concluido: "Concluido",
+  Suspendido: "Suspendido",
+  Cancelado: "Cancelado",
 };
 
 // Mapeo de tipos Firestore → tipos UI
 const tipoMap: Record<string, ProjectTipo> = {
-  "agua-y-riego":       "Agua y Riego",
-  "agroecologia":       "Agroecología",
-  "bofedales":          "Manejo de Bofedales",
-  "mujeres":            "Liderazgo de Mujeres",
-  "tecnologias":        "Tecnologías Solares",
+  "agua-y-riego": "Agua y Riego",
+  agroecologia: "Agroecología",
+  bofedales: "Manejo de Bofedales",
+  mujeres: "Liderazgo de Mujeres",
+  tecnologias: "Tecnologías Solares",
   // Por si el ID coincide con el nombre del tipo directamente
-  "Agua y Riego":       "Agua y Riego",
-  "Agroecología":       "Agroecología",
-  "Manejo de Bofedales":"Manejo de Bofedales",
-  "Liderazgo de Mujeres":"Liderazgo de Mujeres",
+  "Agua y Riego": "Agua y Riego",
+  Agroecología: "Agroecología",
+  "Manejo de Bofedales": "Manejo de Bofedales",
+  "Liderazgo de Mujeres": "Liderazgo de Mujeres",
   "Tecnologías Solares": "Tecnologías Solares",
 };
 
@@ -61,8 +62,7 @@ export function adaptProject(
       : "Bolivia";
 
   // Resolver nombre del financiador
-  const financiadorNombre =
-    financiadoresMap[fp.financiadorId] ?? fp.financiadorId ?? "";
+  const financiadorNombre = financiadoresMap[fp.financiadorId] ?? fp.financiadorId ?? "";
 
   // Resolver nombre del tipo
   const tipoNombre = tiposMap[fp.tipoProyectoId] ?? fp.tipoProyectoId ?? "";
@@ -71,16 +71,10 @@ export function adaptProject(
   const estado: ProjectEstado = estadoMap[fp.estado] ?? "Planificado";
 
   // Mapear tipo — buscar en el mapa o intentar match directo
-  const tipo: ProjectTipo =
-    tipoMap[fp.tipoProyectoId] ??
-    tipoMap[tipoNombre] ??
-    "Agua y Riego";
+  const tipo: ProjectTipo = tipoMap[fp.tipoProyectoId] ?? tipoMap[tipoNombre] ?? "Agua y Riego";
 
-  // Imagen: usar primera de la galería o placeholder SEMTA
-  const imagen =
-    fp.imageUrls?.length > 0
-      ? fp.imageUrls[0]
-      : "https://lh3.googleusercontent.com/aida-public/AB6AXuAQK5n6LW2ug_oRYK5IdsciuHh4IGzYPamNMQftWe2uDHCGiFRaenQy_906-80zMpEthY3DQqSKjB8qZNAIRbm9UkSd-jzV0DgyJHG3fJMgdZiJS_Ug4k6qxfpB_AvCh7ZtRNY0DaC4RpubslxGgmno6Lf569s6CH13a5VrOLJJ4sWS4ZkEnWIKCOkeYnM_hAZmUBnHB029RLPFhW6JMaQltvrrXFE4gw5uFbrL5XxTJkM2MBN9Nw";
+  // Imagen: normalizar links de Drive → imagen directa, o placeholder SEMTA
+  const imagen = fp.imageUrls?.length > 0 ? normalizeImageUrl(fp.imageUrls[0]) : FALLBACK_IMAGE;
 
   // Texto de búsqueda combinado para el filtro client-side
   const search = [
@@ -97,21 +91,21 @@ export function adaptProject(
     .toLowerCase();
 
   return {
-    id:           fp.proyectoId,
-    titulo:       fp.nombre,
-    descripcion:  fp.descripcion || fp.objetivo,
+    id: fp.proyectoId,
+    titulo: fp.nombre,
+    descripcion: fp.descripcion || fp.objetivo,
     estado,
     tipo,
-    municipio:    municipioNombre,
-    financiador:  financiadorNombre,
-    cooperante:   financiadorNombre,
+    municipio: municipioNombre,
+    financiador: financiadorNombre,
+    cooperante: financiadorNombre,
     beneficiarios: fp.beneficiarios || "Familias beneficiadas",
-    gestion:      String(fp.anio),
-    ubicacion:    municipioNombre + ", Bolivia",
+    gestion: String(fp.anio),
+    ubicacion: municipioNombre + ", Bolivia",
     imagen,
-    alt:          `Proyecto SEMTA: ${fp.nombre} en ${municipioNombre}`,
-    codigo:       `ID: ${fp.proyectoId}`,
-    boton:        "Ficha Técnica",
+    alt: `Proyecto SEMTA: ${fp.nombre} en ${municipioNombre}`,
+    codigo: `ID: ${fp.proyectoId}`,
+    boton: "Ficha Técnica",
     search,
   };
 }
@@ -123,7 +117,5 @@ export function adaptProjects(
   financiadoresMap: Record<string, string> = {},
   tiposMap: Record<string, string> = {},
 ): IProject[] {
-  return fps.map((fp) =>
-    adaptProject(fp, municipiosMap, financiadoresMap, tiposMap),
-  );
+  return fps.map((fp) => adaptProject(fp, municipiosMap, financiadoresMap, tiposMap));
 }
