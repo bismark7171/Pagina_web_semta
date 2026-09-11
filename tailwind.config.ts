@@ -77,12 +77,30 @@ const config: Config = {
         "label-caps": ['"Inter"', "sans-serif"],
       },
       fontSize: {
-        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.025em", fontWeight: "800" }],
-        "display-lg-mobile": ["34px", { lineHeight: "42px", letterSpacing: "-0.02em", fontWeight: "800" }],
-        "headline-xl": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
-        "headline-xl-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" }],
-        "headline-lg": ["28px", { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" }],
-        "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "display-lg": [
+          "48px",
+          { lineHeight: "56px", letterSpacing: "-0.025em", fontWeight: "800" },
+        ],
+        "display-lg-mobile": [
+          "34px",
+          { lineHeight: "42px", letterSpacing: "-0.02em", fontWeight: "800" },
+        ],
+        "headline-xl": [
+          "36px",
+          { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" },
+        ],
+        "headline-xl-mobile": [
+          "28px",
+          { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" },
+        ],
+        "headline-lg": [
+          "28px",
+          { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" },
+        ],
+        "headline-md": [
+          "22px",
+          { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" },
+        ],
         "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "600" }],
         "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
@@ -110,6 +128,15 @@ const config: Config = {
       boxShadow: {
         "card-semta": "0 1px 2px rgba(25,28,25,0.06), 0 8px 24px rgba(25,28,25,0.08)",
         "soft-semta": "0 8px 30px rgba(44,62,46,0.10)",
+      },
+      animation: {
+        marquee: "marquee 28s linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
     },
   },
