@@ -1,13 +1,4 @@
-const cooperantes = [
-  "COSUDE",
-  "Unión Europea",
-  "Misereor",
-  "Pan para el Mundo",
-  "FOS Bélgica",
-  "OPEC Fund",
-  "Acción contra el Hambre",
-  "Gobierno Municipal de La Paz",
-];
+import { cooperantes } from "@/data/cooperantes";
 
 function CooperanteItem({ nombre }: { nombre: string }) {
   return (

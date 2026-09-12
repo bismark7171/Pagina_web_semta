@@ -6,6 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingChat from "@/components/layout/FloatingChat";
 import { BackToTop } from "@/components/layout/BackToTop";
+import { ThemeProvider, ThemeScript } from "@/components/layout/ThemeProvider";
 import { siteDetails } from "@/data/siteDetails";
 
 import "./globals.css";
@@ -85,24 +86,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${plusJakartaSans.variable} ${inter.variable}`}>
-      <head>{/* Material Symbols CDN eliminado — ahora se usa Lucide React SVG inline */}</head>
+      <head>
+        {/* Script inline anti-flash: aplica clase 'dark' ANTES de renderizar */}
+        <ThemeScript />
+      </head>
       <body className="antialiased">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-label-lg focus:font-semibold focus:text-on-primary"
-        >
-          Saltar al contenido principal
-        </a>
-        <Header />
-        <main id="main-content">{children}</main>
-        <Footer />
-        <FloatingChat />
-        <BackToTop />
-        <Toaster position="bottom-right" richColors toastOptions={{ className: "font-body" }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
+        <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-label-lg focus:font-semibold focus:text-on-primary"
+          >
+            Saltar al contenido principal
+          </a>
+          <Header />
+          <main id="main-content">{children}</main>
+          <Footer />
+          <FloatingChat />
+          <BackToTop />
+          <Toaster position="bottom-right" richColors toastOptions={{ className: "font-body" }} />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );

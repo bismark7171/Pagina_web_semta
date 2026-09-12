@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { FadeIn } from "@/components/ui/FadeIn";
-
-const cooperantes = ["COSUDE", "Unión Europea", "Misereor", "Pan para el Mundo", "FOS Bélgica"];
+import { cooperantes } from "@/data/cooperantes";
 
 export default function HomeCta() {
   return (
@@ -44,7 +43,7 @@ export default function HomeCta() {
             <span className="font-label-caps uppercase tracking-wider text-white/60">
               Cooperantes:
             </span>
-            {cooperantes.map((c) => (
+            {cooperantes.slice(0, 6).map((c) => (
               <span
                 key={c}
                 className="rounded-full border border-white/20 px-4 py-1.5 text-label-md font-semibold text-white/85"
@@ -52,7 +51,11 @@ export default function HomeCta() {
                 {c}
               </span>
             ))}
-            <span className="text-label-md text-white/60">y +4 agencias aliadas</span>
+            {cooperantes.length > 6 && (
+              <span className="text-label-md text-white/60">
+                y +{cooperantes.length - 6} agencias aliadas
+              </span>
+            )}
           </div>
         </FadeIn>
       </div>

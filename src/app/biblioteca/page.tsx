@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
-import { bibliotecaDocs, bibliotecaDestacados } from "@/data/biblioteca";
+import DocumentoCard from "@/components/biblioteca/DocumentoCard";
+import { adminGetLibrosPublicos } from "@/lib/firebase/adminBibliotecaService";
+import { adaptLibros } from "@/lib/firebase/bibliotecaAdapter";
+import { bibliotecaFallback } from "@/data/biblioteca";
+import type { ILibro } from "@/types";
 
 export const metadata: Metadata = {
   title: "Biblioteca Digital",
@@ -10,18 +13,36 @@ export const metadata: Metadata = {
     "Memorias institucionales, manuales técnicos, estados financieros y publicaciones de SEMTA en descarga libre.",
 };
 
-export default function BibliotecaPage() {
-  const marcadas = bibliotecaDocs.filter((d) =>
-    bibliotecaDestacados.includes(d.titulo),
-  );
-  const resto = bibliotecaDocs.filter(
-    (d) => !bibliotecaDestacados.includes(d.titulo),
-  );
+// ISR: revalidar cada 10 minutos.
+// Cuando se sube un nuevo documento en la app Flutter → máximo 10 min después
+// la web lo muestra sin hacer deploy.
+export const revalidate = 600;
+
+export default async function BibliotecaPage() {
+  // Intentar cargar desde Firestore — si falla, datos estáticos de muestra
+  let libros: ILibro[] = bibliotecaFallback;
+
+  try {
+    const firestoreLibros = await adminGetLibrosPublicos();
+    if (firestoreLibros.length > 0) {
+      libros = adaptLibros(firestoreLibros);
+    }
+  } catch (err) {
+    // Firebase no disponible en este entorno — mostrar datos estáticos
+    console.warn("[BibliotecaPage] Usando fallback estático — Firebase no disponible:", err);
+  }
+
+  // Separar destacados del resto — igual que el patrón original
+  const destacados = libros.filter((l) => l.esDestacado);
+  const catalogo = libros.filter((l) => !l.esDestacado);
 
   return (
     <>
       <PageHero
-        crumbs={[{ label: "Inicio", href: "/" }, { label: "Biblioteca", href: "/biblioteca" }]}
+        crumbs={[
+          { label: "Inicio", href: "/" },
+          { label: "Biblioteca", href: "/biblioteca" },
+        ]}
         badge={{ icono: "menu_book", text: "Acceso Libre" }}
         titulo={
           <>
@@ -31,72 +52,69 @@ export default function BibliotecaPage() {
         descripcion="Memorias, manuales técnicos, estudios y publicaciones de libre consulta para la ciudadanía, organizaciones campesinas y la cooperación internacional."
       />
 
-      <section className="bg-background py-16">
-        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <SectionLabel icono="star">Destacados</SectionLabel>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {marcadas.map((doc) => (
-              <DocumentoCard key={doc.titulo} doc={doc} destacado />
-            ))}
+      {/* Destacados — solo si hay alguno */}
+      {destacados.length > 0 && (
+        <section className="bg-background py-16">
+          <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+            <SectionLabel icono="star">Destacados</SectionLabel>
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {destacados.map((libro) => (
+                <DocumentoCard key={libro.id} libro={libro} destacado />
+              ))}
+            </div>
           </div>
+        </section>
+      )}
+
+      {/* Catálogo completo */}
+      <section
+        className={
+          destacados.length > 0 ? "bg-surface-container-lowest py-16" : "bg-background py-16"
+        }
+      >
+        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+          <div className="flex items-end justify-between gap-4">
+            <SectionLabel icono="inventory_2">
+              {catalogo.length > 0 ? "Catálogo" : "Publicaciones"}
+            </SectionLabel>
+            {libros.length > 0 && (
+              <p className="text-label-md text-on-surface-variant">
+                {libros.length} documento{libros.length !== 1 ? "s" : ""} disponibles
+              </p>
+            )}
+          </div>
+
+          {catalogo.length > 0 ? (
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {catalogo.map((libro) => (
+                <DocumentoCard key={libro.id} libro={libro} />
+              ))}
+            </div>
+          ) : (
+            // Si todos son destacados, mostrar todos igual en grilla
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {libros.map((libro) => (
+                <DocumentoCard key={libro.id} libro={libro} destacado={libro.esDestacado} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="bg-surface-container-lowest py-16">
-        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <SectionLabel icono="inventory_2">Catálogo</SectionLabel>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {resto.map((doc) => (
-              <DocumentoCard key={doc.titulo} doc={doc} />
-            ))}
-          </div>
+      {/* CTA contacto */}
+      <section className="bg-bosque py-14">
+        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop text-center">
+          <p className="text-body-lg text-white/80">
+            ¿No encontrás lo que buscás? Escribinos directamente.
+          </p>
+          <a
+            href="mailto:info@semta.org.bo?subject=Consulta%20Biblioteca%20Digital"
+            className="mt-6 inline-flex items-center gap-2 rounded-full border-2 border-primary-fixed px-8 py-3.5 text-label-lg font-semibold text-primary-fixed transition-colors hover:bg-primary-fixed hover:text-bosque"
+          >
+            info@semta.org.bo
+          </a>
         </div>
       </section>
     </>
-  );
-}
-
-function DocumentoCard({
-  doc,
-  destacado = false,
-}: {
-  doc: (typeof bibliotecaDocs)[number];
-  destacado?: boolean;
-}) {
-  return (
-    <article
-      className={`group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta ${
-        destacado ? "border-primary/30" : ""
-      }`}
-    >
-      <div className="flex items-start justify-between p-7">
-        <span className="grid size-14 place-items-center rounded-2xl bg-primary-container/15 text-primary">
-          <MaterialIcon name={doc.icono} className="text-[28px]" />
-        </span>
-        <span className="rounded-full bg-primary/10 px-3 py-1 text-label-caps uppercase tracking-wider text-primary">
-          {doc.etiqueta}
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col px-7 pb-7">
-        <p className="text-label-caps uppercase tracking-wider text-on-surface-variant">
-          {doc.categoria} · {doc.gestion}
-        </p>
-        <h3 className="mt-2 font-headline-md leading-snug text-on-surface">
-          {doc.titulo}
-        </h3>
-        <p className="mt-2 flex-1 text-body-sm leading-relaxed text-on-surface-variant">
-          {doc.descripcion}
-        </p>
-        <a
-          href={`mailto:info@semta.org.bo?subject=${encodeURIComponent(
-            "Solicitud de documento: " + doc.titulo,
-          )}`}
-          className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary/10 px-5 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-primary hover:text-on-primary"
-        >
-          <MaterialIcon name="download" className="text-[1.1em]" />
-          Solicitar documento
-        </a>
-      </div>
-    </article>
   );
 }

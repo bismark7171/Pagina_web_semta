@@ -1,14 +1,40 @@
 /**
  * test/components/FaseD.test.tsx
- * Fase D: lightbox (GaleriaEspacios + PhotoEssay) y MapaBolivia interactivo.
+ * Fase D: lightbox (GaleriaEspacios + PhotoEssay) y MapaBolivia Leaflet.
  */
 
+import type { ReactNode } from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import MapaBolivia from "@/components/home/MapaBolivia";
+import MapaBolivia, { type MunicipioMapa } from "@/components/home/MapaBolivia";
+import MapaBoliviaInner from "@/components/home/MapaBoliviaInner";
 import PhotoEssay from "@/components/home/PhotoEssay";
 import GaleriaEspacios from "@/components/casa-semta/GaleriaEspacios";
 import { casaSemtaPhotogrid } from "@/data/casaSemta";
+
+// ─── Mocks: Leaflet no corre en jsdom ─────────────────────────────────────────
+// react-leaflet se reemplaza por componentes que solo pasan children;
+// leaflet por un stub con divIcon e Icon.Default de mentira.
+vi.mock("react-leaflet", () => ({
+  MapContainer: ({ children }: { children?: ReactNode }) => children,
+  TileLayer: () => null,
+  Marker: ({ children }: { children?: ReactNode }) => children,
+  Tooltip: ({ children }: { children?: ReactNode }) => children,
+  ZoomControl: () => null,
+}));
+
+vi.mock("leaflet", () => ({
+  default: {
+    divIcon: () => ({}),
+    Icon: { Default: { prototype: {}, mergeOptions: () => {} } },
+  },
+}));
+
+// El wrapper carga el mapa con next/dynamic ssr:false — en tests lo anulamos.
+vi.mock("next/dynamic", () => ({
+  __esModule: true,
+  default: () => () => null,
+}));
 
 const dosFotos = [
   {
@@ -78,44 +104,56 @@ describe("PhotoEssay — lightbox", () => {
   });
 });
 
-describe("MapaBolivia", () => {
-  it("renderiza sin errores", () => {
-    const { container } = render(<MapaBolivia />);
-    expect(container).toBeTruthy();
+describe("MapaBolivia — wrapper Leaflet", () => {
+  const municipiosPrueba: MunicipioMapa[] = [
+    { id: "batallas", nombre: "Batallas", cantidadProyectos: 2 },
+    { id: "colomi", nombre: "Colomi", cantidadProyectos: 1 },
+  ];
+
+  it("renderiza el encabezado con el conteo de municipios", () => {
+    render(<MapaBolivia municipios={municipiosPrueba} />);
+    expect(
+      screen.getByRole("heading", { name: /Presencia SEMTA en Bolivia/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/2 municipios con proyectos/)).toBeInTheDocument();
   });
 
-  it("muestra los 9 departamentos", () => {
-    render(<MapaBolivia />);
-    expect(screen.getAllByRole("group").length).toBeGreaterThan(0);
-    // Puntos de municipios con aria-label "nombre, departamento: N proyecto(s)"
-    expect(screen.getAllByRole("button").length).toBeGreaterThanOrEqual(6);
+  it("muestra la leyenda de presencia SEMTA", () => {
+    render(<MapaBolivia municipios={[]} />);
+    expect(screen.getByText(/Municipios con presencia SEMTA/)).toBeInTheDocument();
   });
+});
 
-  it("tiene los municipios con proyectos de proyectos.ts", () => {
-    render(<MapaBolivia />);
-    expect(screen.getByLabelText(/Batallas, La Paz/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Achacachi, La Paz/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Tiwanaku, La Paz/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Patacamaya, La Paz/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Colomi, Cochabamba/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Torotoro, Potosí/)).toBeInTheDocument();
-  });
+describe("MapaBoliviaInner — mapa Leaflet", () => {
+  const municipiosPrueba: MunicipioMapa[] = [
+    {
+      id: "batallas",
+      nombre: "Batallas",
+      cantidadProyectos: 2,
+      ubicacion: { lat: -16.3, lng: -68.3 },
+    },
+    { id: "colomi", nombre: "Colomi", cantidadProyectos: 1 },
+    { id: "sin-coords", nombre: "Desconocido", cantidadProyectos: 4 },
+  ];
 
-  it("selecciona un municipio y muestra su panel", () => {
-    render(<MapaBolivia />);
-    fireEvent.click(screen.getByLabelText(/Batallas, La Paz/));
+  it("crea marcadores solo para municipios con coordenadas", () => {
+    render(<MapaBoliviaInner municipios={municipiosPrueba} />);
     expect(screen.getByText("Batallas")).toBeInTheDocument();
-    expect(screen.getByText(/2 proyectos registrados/)).toBeInTheDocument();
-    expect(screen.getByText("Ver proyectos").closest("a")).toHaveAttribute("href", "/proyectos");
+    expect(screen.getByText("Colomi")).toBeInTheDocument();
+    // El tercero no tiene coords ni fallback → no aparece
+    expect(screen.queryByText("Desconocido")).not.toBeInTheDocument();
   });
 
-  it("deselecciona al tocar de nuevo el mismo municipio", () => {
-    render(<MapaBolivia />);
-    const chip = screen.getByLabelText(/Batallas, La Paz/);
-    fireEvent.click(chip);
-    expect(screen.getByText("Batallas")).toBeInTheDocument();
-    fireEvent.click(chip);
-    expect(screen.queryByText("Batallas")).not.toBeInTheDocument();
-    expect(screen.getByText(/Tocá un municipio/)).toBeInTheDocument();
+  it("usa plural según la cantidad de proyectos", () => {
+    render(<MapaBoliviaInner municipios={municipiosPrueba} />);
+    expect(screen.getByText("2 proyectos")).toBeInTheDocument();
+    expect(screen.getByText("1 proyecto")).toBeInTheDocument();
+  });
+
+  it("muestra placeholder cuando no hay municipios con coords", () => {
+    render(
+      <MapaBoliviaInner municipios={[{ id: "sin-coords", nombre: "X", cantidadProyectos: 1 }]} />,
+    );
+    expect(screen.getByText(/Mapa de cobertura en preparación/)).toBeInTheDocument();
   });
 });

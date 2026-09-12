@@ -4,7 +4,23 @@ import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { CountUp } from "@/components/ui/CountUp";
 
-export default function ImpactMetrics() {
+export default function ImpactMetrics({
+  totalProyectos,
+  totalMunicipios,
+}: {
+  totalProyectos?: number;
+  totalMunicipios?: number;
+}) {
+  const metrics = impactMetrics.map((m) => {
+    if (m.titulo === "Proyectos ejecutados" && totalProyectos !== undefined) {
+      return { ...m, valor: String(totalProyectos) };
+    }
+    if (m.footer.startsWith("Cobertura acumulada") && totalMunicipios !== undefined) {
+      return { ...m, footer: `Cobertura en ${totalMunicipios} municipios` };
+    }
+    return m;
+  });
+
   return (
     <section className="bg-surface-container-lowest py-20">
       <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
@@ -24,7 +40,7 @@ export default function ImpactMetrics() {
         </FadeIn>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {impactMetrics.map((m, i) => (
+          {metrics.map((m, i) => (
             <FadeIn key={m.titulo} delay={i * 0.12}>
               <article className="group h-full rounded-3xl border border-outline-variant bg-surface-container-lowest p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
                 <div className="flex items-center justify-between">

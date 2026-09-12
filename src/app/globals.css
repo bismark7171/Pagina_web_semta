@@ -2,6 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Variables de modo oscuro ─────────────────────────────────────────────── */
+/* La clase 'dark' en <html> activa estas sobreescrituras.                      */
+/* Los colores base (modo claro) están en tailwind.config.ts.                  */
+
+:root {
+  color-scheme: light;
+  --primary: #0d631b;
+  --on-primary: #ffffff;
+  --primary-container: #2e7d32;
+  --on-primary-container: #adf7b9;
+  --primary-fixed: #98f2a4;
+  --primary-fixed-dim: #79d886;
+  --on-primary-fixed: #05200c;
+  --on-primary-fixed-variant: #145320;
+
+  --secondary: #005db7;
+  --on-secondary: #ffffff;
+  --secondary-container: #64a1ff;
+  --on-secondary-container: #001c41;
+  --secondary-fixed: #b6caff;
+  --secondary-fixed-dim: #6fa9ff;
+  --on-secondary-fixed: #061633;
+  --on-secondary-fixed-variant: #004482;
+
+  --tertiary: #00631e;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #277d34;
+  --on-tertiary-container: #339941;
+  --tertiary-fixed: #9df6a2;
+  --tertiary-fixed-dim: #7edd84;
+  --on-tertiary-fixed: #012105;
+  --on-tertiary-fixed-variant: #044b18;
+
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #410002;
+
+  --background: #fcf9f8;
+  --on-background: #191c19;
+  --surface: #fcf9f8;
+  --on-surface: #191c19;
+  --surface-dim: #dcd9d8;
+  --surface-bright: #fcf9f8;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6f3f2;
+  --surface-container: #f1eeed;
+  --surface-container-high: #ebe8e7;
+  --surface-container-highest: #e6e1dd;
+  --on-surface-variant: #424940;
+  --outline: #72796f;
+  --outline-variant: #c2c9bc;
+  --inverse-surface: #2e312d;
+  --inverse-on-surface: #f0f1ec;
+  --inverse-primary: #79d886;
+
+  --bosque: #0d3b0d;
+  --verde-semta: #0d631b;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Fondos de superficie */
+  --background: #0f1510;
+  --surface: #0f1510;
+  --surface-container-lowest: #131a13;
+  --surface-container-low: #161e16;
+  --surface-container: #1c241c;
+  --surface-container-high: #222c22;
+  --surface-container-highest: #283228;
+  --surface-dim: #0a110a;
+
+  /* Textos */
+  --on-background: #e1e3de;
+  --on-surface: #e1e3de;
+  --on-surface-variant: #8fa08c;
+
+  /* Mantener el mismo color especial 'bosque' en fondos pero texto más claro */
+  --bosque: #0a1a0a;
+
+  /* Bordes */
+  --outline: #8fa08c;
+  --outline-variant: #3a4a3a;
+}
+
+@layer base {
+  .dark .text-bosque {
+    color: #98f2a4;
+  }
+
+  /* Cards — sombra más sutil en dark */
+  .dark .hover\:shadow-card-semta:hover {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
 html {
   @apply scroll-smooth;
 }
@@ -16,6 +114,9 @@ body {
   color: var(--on-surface, #191c19);
   background: var(--background, #fcf9f8);
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 h1,

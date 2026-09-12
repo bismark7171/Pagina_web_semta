@@ -20,18 +20,32 @@ export const menuItems: INavItem[] = [
   { label: "Casa SEMTA", href: "/casa-semta" },
   { label: "Biblioteca", href: "/biblioteca" },
   {
+    label: "Formación",
+    href: "/cursos",
+    children: [
+      { label: "Cursos y Certificaciones", href: "/cursos" },
+      { label: "Pasantías 340h", href: "/pasantias" },
+    ],
+  },
+  {
     label: "Comunidad",
     href: "/noticias",
     children: [
       { label: "Noticias", href: "/noticias" },
-      { label: "Pasantías 340h", href: "/pasantias" },
       { label: "Agenda de Talleres", href: "/agenda" },
     ],
   },
-  { label: "Nosotros", href: "/nosotros" },
+  {
+    label: "Nosotros",
+    href: "/nosotros",
+    children: [
+      { label: "Nosotros", href: "/nosotros" },
+      { label: "Transparencia", href: "/transparencia" },
+    ],
+  },
 ];
 
 export const headerCta = {
-  label: "Verificar Certificado",
-  href: "/verificar-certificado",
+  label: "Contáctanos",
+  href: "/contacto",
 };

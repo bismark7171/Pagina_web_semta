@@ -1,77 +1,115 @@
-export interface IBibliotecaDoc {
-  icono: string;
-  categoria: string;
-  titulo: string;
-  descripcion: string;
-  gestion: string;
-  etiqueta: string;
-}
+/**
+ * biblioteca.ts
+ * Datos estáticos de fallback para la Biblioteca Digital.
+ *
+ * Se usan cuando Firestore no está disponible (dev sin credenciales,
+ * build CI, error de red). En producción Vercel, la página siempre
+ * carga desde Firestore via adminBibliotecaService + bibliotecaAdapter.
+ *
+ * ⚠️  No eliminar — son el fallback del Server Component.
+ * ✅  Mantener en sync con la estructura real de Firestore.
+ */
 
-export const bibliotecaDocs: IBibliotecaDoc[] = [
+import type { ILibro } from "@/types";
+
+export const bibliotecaFallback: ILibro[] = [
   {
-    icono: "book",
-    categoria: "Memoria Institucional",
+    id: "fallback-001",
     titulo: "Memoria SEMTA 2024",
-    descripcion: "Balance anual de programas, resultados en territorio y estados financieros auditados.",
+    autor: "SEMTA",
+    descripcion:
+      "Balance anual de programas, resultados en territorio y estados financieros auditados.",
+    categoria: "Memoria Institucional",
+    etiquetas: ["destacado", "institucional", "2024"],
     gestion: "2024",
-    etiqueta: "PDF",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: true,
+    icono: "book",
+    search: "memoria semta 2024 institucional balance anual",
   },
   {
-    icono: "account_balance",
-    categoria: "Estados Financieros",
-    titulo: "Cierre de Gestión 2023",
-    descripcion: "Ejecución presupuestaria certificada por auditoría independiente.",
-    gestion: "2023",
-    etiqueta: "PDF",
-  },
-  {
-    icono: "menu_book",
-    categoria: "Manual Técnico",
+    id: "fallback-002",
     titulo: "Guía de Cosecha de Agua en el Altiplano",
-    descripcion: "Criterios de diseño de atajados, qochas y microriego comunitario.",
-    gestion: "2022",
-    etiqueta: "Descargable",
-  },
-  {
-    icono: "biotech",
+    autor: "Equipo Técnico SEMTA",
+    descripcion:
+      "Criterios de diseño de atajados, qochas y microriego comunitario para comunidades del altiplano boliviano.",
     categoria: "Manual Técnico",
-    titulo: "Biofertilizantes y Microorganismos",
-    descripcion: "Recetario práctico de producción casera de biol y microorganismos de montaña.",
+    etiquetas: ["destacado", "agua", "microriego", "técnico"],
     gestion: "2022",
-    etiqueta: "Descargable",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: true,
+    icono: "menu_book",
+    search: "guia cosecha agua altiplano microriego atajados técnico",
   },
   {
-    icono: "badge",
-    categoria: "Documento de Gestión",
+    id: "fallback-003",
+    titulo: "Cierre de Gestión 2023",
+    autor: "SEMTA",
+    descripcion: "Ejecución presupuestaria certificada por auditoría independiente.",
+    categoria: "Estados Financieros",
+    etiquetas: ["financiero", "auditado"],
+    gestion: "2023",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: false,
+    icono: "account_balance",
+    search: "cierre gestion 2023 estados financieros auditado presupuesto",
+  },
+  {
+    id: "fallback-004",
+    titulo: "Biofertilizantes y Microorganismos",
+    autor: "Equipo Técnico SEMTA",
+    descripcion: "Recetario práctico de producción casera de biol y microorganismos de montaña.",
+    categoria: "Manual Técnico",
+    etiquetas: ["agroecología", "bioinsumos", "técnico"],
+    gestion: "2022",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: false,
+    icono: "biotech",
+    search: "biofertilizantes microorganismos biol agroecologia manual técnico",
+  },
+  {
+    id: "fallback-005",
     titulo: "Estatuto Orgánico SEMTA",
+    autor: "SEMTA",
     descripcion: "Estatuto, reglamento interno y acreditaciones vigentes.",
+    categoria: "Documento de Gestión",
+    etiquetas: ["gobernanza", "institucional"],
     gestion: "2021",
-    etiqueta: "PDF",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: false,
+    icono: "badge",
+    search: "estatuto organico semta reglamento interno acreditaciones gobernanza",
   },
   {
-    icono: "analytics",
-    categoria: "Estudios",
+    id: "fallback-006",
     titulo: "Línea Base de Bofedales Altoandinos",
-    descripcion: "Estudio de capacidad de carga y restauración de humedales en cuencas intervenidas.",
+    autor: "Equipo de Investigación SEMTA",
+    descripcion:
+      "Estudio de capacidad de carga y restauración de humedales en cuencas intervenidas.",
+    categoria: "Estudios",
+    etiquetas: ["bofedales", "humedales", "investigación"],
     gestion: "2020",
-    etiqueta: "Estudio",
-  },
-  {
-    icono: "campaign",
-    categoria: "Boletín",
-    titulo: "Noticias del Territorio N° 12",
-    descripcion: "Cosechas de agua, ferias agroecológicas y formación de nuevos talentos.",
-    gestion: "2025",
-    etiqueta: "Revista",
-  },
-  {
-    icono: "verified_user",
-    categoria: "Informes",
-    titulo: "Resultados Verificables por Proyecto",
-    descripcion: "Fichas técnicas públicas de cada intervención con indicadores y coberturas.",
-    gestion: "Actualizado",
-    etiqueta: "En línea",
+    paginas: 0,
+    idioma: "Español",
+    portada: null,
+    urlPdf: "",
+    esDestacado: false,
+    icono: "analytics",
+    search: "linea base bofedales altoandinos humedales restauracion investigacion",
   },
 ];
-
-export const bibliotecaDestacados = ["Memoria SEMTA 2024", "Guía de Cosecha de Agua en el Altiplano"];

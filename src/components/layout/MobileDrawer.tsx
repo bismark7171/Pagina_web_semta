@@ -8,13 +8,7 @@ import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
 import { menuItems, headerCta } from "@/data/menuItems";
 
-export function MobileDrawer({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Transition show={open} as={Fragment}>
       <Dialog className="relative z-50 lg:hidden" onClose={onClose}>
@@ -85,11 +79,7 @@ export function MobileDrawer({
                 </nav>
 
                 <div className="mt-auto border-t border-outline-variant px-6 py-5">
-                  <Button
-                    href={headerCta.href}
-                    icono="verified_user"
-                    className="w-full"
-                  >
+                  <Button href={headerCta.href} icono="mail" className="w-full">
                     {headerCta.label}
                   </Button>
                 </div>

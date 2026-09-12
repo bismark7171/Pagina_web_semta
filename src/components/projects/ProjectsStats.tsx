@@ -2,12 +2,19 @@ import { quickStats } from "@/data/quickStats";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 
 export default function ProjectsStats({ total }: { total?: number }) {
-  // Si se pasa total real de Firestore, actualizar el stat correspondiente
-  const stats = quickStats.map((s) =>
-    s.label === "Total Registrados" && total !== undefined
-      ? { ...s, valor: String(total) }
-      : s,
-  );
+  // Si se pasa el total real de Firestore, se muestra como primera tarjeta
+  const stats =
+    total !== undefined
+      ? [
+          {
+            label: "Proyectos registrados",
+            valor: String(total),
+            detalle: "Colección pública Firestore",
+            icono: "layers" as const,
+          },
+          ...quickStats.slice(1),
+        ]
+      : quickStats;
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((s) => (
@@ -22,9 +29,7 @@ export default function ProjectsStats({ total }: { total?: number }) {
             <p className="font-display-lg text-3xl font-extrabold tracking-tight text-bosque">
               {s.valor}
             </p>
-            <p className="text-label-lg font-semibold text-on-surface">
-              {s.label}
-            </p>
+            <p className="text-label-lg font-semibold text-on-surface">{s.label}</p>
             <p className="text-body-sm text-on-surface-variant">{s.detalle}</p>
           </div>
         </div>

@@ -36,6 +36,9 @@ vi.mock("framer-motion", () => ({
   },
   AnimatePresence: ({ children }: { children: React.ReactNode }) =>
     React.createElement(React.Fragment, null, children),
+  useMotionValue: () => ({ set: () => {} }),
+  useSpring: (v: unknown) => v,
+  useTransform: () => ({ get: () => 0 }),
 }));
 
 // ─── Dataset de prueba ────────────────────────────────────────────────────────

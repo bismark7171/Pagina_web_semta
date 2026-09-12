@@ -65,7 +65,7 @@ describe("PhotoEssay", () => {
   it("muestra las estadísticas rápidas", () => {
     render(<PhotoEssay />);
     expect(screen.getByText("Activos en Campo")).toBeInTheDocument();
-    expect(screen.getByText("Total Registrados")).toBeInTheDocument();
+    expect(screen.getByText("Familias Beneficiadas")).toBeInTheDocument();
     expect(screen.getByText("14,280+")).toBeInTheDocument();
   });
 });

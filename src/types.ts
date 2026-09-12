@@ -1,9 +1,5 @@
 export type ProjectEstado =
-  | "Planificado"
-  | "En Ejecución"
-  | "Concluido"
-  | "Suspendido"
-  | "Cancelado";
+  "Planificado" | "En Ejecución" | "Concluido" | "Suspendido" | "Cancelado";
 
 export type ProjectTipo =
   | "Agua y Riego"
@@ -79,12 +75,7 @@ export interface IPhotoTag {
   titulo: string;
 }
 
-export type CalloutButtonKind =
-  | "primary"
-  | "secondary"
-  | "ghost"
-  | "outline"
-  | "solid";
+export type CalloutButtonKind = "primary" | "secondary" | "ghost" | "outline" | "solid";
 
 export interface ICalloutButton {
   text: string;
@@ -148,4 +139,50 @@ export interface INavItem {
   label: string;
   href: string;
   children?: { label: string; href: string }[];
+}
+
+// ─── Cursos y Certificaciones ─────────────────────────────────────────────────
+
+/** Curso público — lo que ven los componentes React.
+ *  Espejo del modelo Curso en semta/lib/features/certificaciones/data/certificado.dart */
+export interface ICurso {
+  id: string;
+  nombre: string;
+  modulos: string[];
+  fechaInicio: string; // "DD/MM/YYYY"
+  fechaFin: string;
+  cargaHoraria: number; // horas
+  plataforma: string;
+  /** Duración formateada: "3 semanas", "2 meses", etc. */
+  duracionTexto: string;
+  /** true si fechaFin >= hoy */
+  estaActivo: boolean;
+}
+
+/** Categorías que usa el sistema maestro Flutter */
+export type LibroCategoria =
+  | "Memoria Institucional"
+  | "Estados Financieros"
+  | "Manual Técnico"
+  | "Documento de Gestión"
+  | "Estudios"
+  | "Publicaciones"
+  | "Otro";
+
+/** Formato UI — lo que usan los componentes React */
+export interface ILibro {
+  id: string;
+  titulo: string;
+  autor: string;
+  descripcion: string;
+  categoria: LibroCategoria | string;
+  etiquetas: string[];
+  gestion: string; // año de publicación como string ("2024")
+  paginas: number;
+  idioma: string;
+  portada: string | null; // URL normalizada o null
+  urlPdf: string; // URL PDF directa (Google Drive convertida)
+  esDestacado: boolean; // true si tiene etiqueta "destacado"
+  icono: string; // icono Material para la card
+  search: string; // texto combinado para filtros cliente
 }

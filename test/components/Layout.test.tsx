@@ -11,6 +11,7 @@ import { MobileDrawer } from "@/components/layout/MobileDrawer";
 import Footer from "@/components/layout/Footer";
 import FloatingChat from "@/components/layout/FloatingChat";
 import { BackToTop } from "@/components/layout/BackToTop";
+import { headerCta } from "@/data/menuItems";
 
 describe("Header", () => {
   it("renderiza sin errores", () => {
@@ -30,8 +31,9 @@ describe("Header", () => {
 
   it("el CTA del header mantiene el enlace de headerCta", () => {
     render(<Header />);
-    const verifiedLinks = screen.getAllByText(/Verificar/i);
-    expect(verifiedLinks.length).toBeGreaterThan(0);
+    const ctaLinks = screen.getAllByText(headerCta.label);
+    expect(ctaLinks.length).toBeGreaterThan(0);
+    expect(ctaLinks[0].closest("a")).toHaveAttribute("href", headerCta.href);
   });
 });
 
@@ -53,7 +55,7 @@ describe("MobileDrawer", () => {
 
   it("abierto mantiene el CTA", () => {
     render(<MobileDrawer open={true} onClose={vi.fn()} />);
-    expect(screen.getAllByText(/Verificar/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(headerCta.label).length).toBeGreaterThan(0);
   });
 
   it("llama onClose al presionar cerrar", () => {
