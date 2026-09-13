@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import type { IServicioCasa } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { Card } from "@/components/ui/Card";
 
 export default function ServicioCard({ servicio }: { servicio: IServicioCasa }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
+    <Card hoverable className="group h-full -col -outline-variant">
       <div className="relative aspect-[16/10] overflow-hidden bg-surface-container-high">
         <Image
           src={servicio.imagen}
@@ -21,9 +22,7 @@ export default function ServicioCard({ servicio }: { servicio: IServicioCasa }) 
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-headline-md leading-snug text-on-surface">
-          {servicio.titulo}
-        </h3>
+        <h3 className="font-headline-md leading-snug text-on-surface">{servicio.titulo}</h3>
         <p className="mt-2 text-body-sm leading-relaxed text-on-surface-variant">
           {servicio.descripcion}
         </p>
@@ -48,9 +47,7 @@ export default function ServicioCard({ servicio }: { servicio: IServicioCasa }) 
             <p className="text-label-caps uppercase tracking-wider text-on-surface-variant">
               {servicio.modalidadLabel}
             </p>
-            <p className="text-label-lg font-semibold text-on-surface">
-              {servicio.modalidad}
-            </p>
+            <p className="text-label-lg font-semibold text-on-surface">{servicio.modalidad}</p>
           </div>
           <Link
             href="/reservar"
@@ -61,6 +58,6 @@ export default function ServicioCard({ servicio }: { servicio: IServicioCasa }) 
           </Link>
         </div>
       </div>
-    </article>
+    </Card>
   );
 }

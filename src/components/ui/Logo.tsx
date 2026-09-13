@@ -20,6 +20,7 @@ export function Logo({ dark = false, className }: { dark?: boolean; className?: 
           dark ? "brightness-0 invert" : "",
         )}
       />
+      <span className="sr-only">SEMTA</span>
     </Link>
   );
 }

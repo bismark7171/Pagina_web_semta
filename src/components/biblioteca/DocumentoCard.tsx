@@ -11,6 +11,7 @@
 
 import Image from "next/image";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { Card } from "@/components/ui/Card";
 import type { ILibro } from "@/types";
 
 interface Props {
@@ -23,14 +24,7 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
   const tieneUrl = libro.urlPdf.length > 0;
 
   return (
-    <article
-      className={[
-        "group flex h-full flex-col overflow-hidden rounded-3xl border",
-        "bg-surface-container-lowest transition-all duration-300",
-        "hover:-translate-y-1 hover:shadow-card-semta",
-        destacado ? "border-primary/30" : "border-outline-variant",
-      ].join(" ")}
-    >
+    <Card hoverable className={destacado ? "border-primary/30" : ""}>
       {/* Portada — solo si hay imagen de portada */}
       {libro.portada && (
         <div className="relative aspect-[16/7] overflow-hidden bg-surface-container-high">
@@ -127,6 +121,6 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
           </a>
         )}
       </div>
-    </article>
+    </Card>
   );
 }

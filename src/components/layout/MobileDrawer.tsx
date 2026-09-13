@@ -1,17 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
+import { usePathname } from "next/navigation";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { Fragment } from "react";
+import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
 import { menuItems, headerCta } from "@/data/menuItems";
 
 export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href.startsWith("#")) return false;
+    const base = href.split("#")[0];
+    const isHashOnHome = base === "/" && href.includes("#");
+    if (href === "/") return pathname === "/";
+    if (isHashOnHome) return false;
+    return pathname.startsWith(base);
+  };
+
   return (
     <Transition show={open} as={Fragment}>
-      <Dialog className="relative z-50 lg:hidden" onClose={onClose}>
+      <Dialog className="relative z-50 xl:hidden" onClose={onClose}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-200"
@@ -51,31 +73,72 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
                 </div>
 
                 <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Principal móvil">
-                  {menuItems.map((item) => (
-                    <div key={item.label}>
-                      <Link
-                        href={item.href}
-                        onClick={onClose}
-                        className="block rounded-xl px-4 py-3 text-label-lg font-semibold text-on-surface/90 transition-colors hover:bg-primary/5 hover:text-primary"
-                      >
-                        {item.label}
-                      </Link>
-                      {item.children && (
-                        <div className="ml-4 flex flex-col gap-0.5 border-l border-outline-variant pl-3">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.label}
-                              href={child.href}
-                              onClick={onClose}
-                              className="block rounded-lg px-3 py-2 text-label-lg text-on-surface/70 transition-colors hover:text-primary"
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                  {menuItems.map((item) => {
+                    const isParentActive = isActive(item.href);
+
+                    return (
+                      <div key={item.label}>
+                        {item.children ? (
+                          <Disclosure>
+                            {({ open: disclosureOpen }) => (
+                              <>
+                                <DisclosureButton
+                                  className={cn(
+                                    "flex w-full items-center justify-between rounded-xl px-4 py-3 text-label-lg transition-all",
+                                    isParentActive
+                                      ? "bg-primary font-semibold text-white shadow-sm dark:text-on-primary"
+                                      : "font-semibold text-on-surface/90 hover:bg-primary/5 hover:text-primary dark:hover:bg-primary dark:hover:text-white",
+                                  )}
+                                >
+                                  {item.label}
+                                  <MaterialIcon
+                                    name="expand_more"
+                                    className={cn(
+                                      "text-[1.2em] transition-transform duration-200",
+                                      disclosureOpen && "rotate-180",
+                                    )}
+                                  />
+                                </DisclosureButton>
+                                <DisclosurePanel className="mt-1 flex flex-col gap-1 px-2">
+                                  {item.children?.map((child) => {
+                                    const isChildActive = isActive(child.href);
+                                    return (
+                                      <Link
+                                        key={child.label}
+                                        href={child.href}
+                                        onClick={onClose}
+                                        className={cn(
+                                          "block rounded-xl px-4 py-2.5 text-label-lg transition-all",
+                                          isChildActive
+                                            ? "bg-primary font-semibold text-white shadow-sm dark:text-on-primary"
+                                            : "text-on-surface/80 hover:bg-primary hover:text-white hover:shadow-sm dark:text-on-surface/90 dark:hover:bg-primary dark:hover:text-white",
+                                        )}
+                                      >
+                                        {child.label}
+                                      </Link>
+                                    );
+                                  })}
+                                </DisclosurePanel>
+                              </>
+                            )}
+                          </Disclosure>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            onClick={onClose}
+                            className={cn(
+                              "block rounded-xl px-4 py-3 text-label-lg transition-all",
+                              isParentActive
+                                ? "bg-primary font-semibold text-white shadow-sm dark:text-on-primary"
+                                : "font-semibold text-on-surface/90 hover:bg-primary/5 hover:text-primary dark:hover:bg-primary dark:hover:text-white",
+                            )}
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  })}
                 </nav>
 
                 <div className="mt-auto border-t border-outline-variant px-6 py-5">

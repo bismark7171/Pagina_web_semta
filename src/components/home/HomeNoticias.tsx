@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { noticias } from "@/data/noticias";
+import { Card } from "@/components/ui/Card";
 
 function fechaLarga(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -47,7 +48,7 @@ export default function HomeNoticias() {
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {recientes.map((n, i) => (
             <FadeIn key={n.titulo} delay={i * 0.1}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
+              <Card hoverable className="group h-full -col -outline-variant">
                 <div className="relative aspect-[16/10]">
                   <Image
                     src={n.imagen}
@@ -66,7 +67,7 @@ export default function HomeNoticias() {
                   </h3>
                   <p className="mt-2 text-body-sm text-on-surface-variant">{fechaLarga(n.fecha)}</p>
                 </div>
-              </article>
+              </Card>
             </FadeIn>
           ))}
         </div>

@@ -7,6 +7,7 @@ import { proyectoEstados } from "@/data/projects";
 import type { IProject } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { FALLBACK_IMAGE } from "@/lib/images";
+import { Card } from "@/components/ui/Card";
 
 // ─── Hook: tilt 3D suave siguiendo el mouse ───────────────────────────────────
 
@@ -72,7 +73,10 @@ export default function ProjectCard({
       whileHover={{ translateY: -4 }}
       transition={{ duration: 0.25 }}
     >
-      <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest shadow-card-semta transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(13,99,27,0.18)]">
+      <Card
+        hoverable
+        className="group h-full -col -outline-variant shadow-card-semta transition-shadow hover:shadow-[0_8px_40px_rgba(13,99,27,0.18)]"
+      >
         {/* Imagen */}
         <div className="relative aspect-[16/9] overflow-hidden bg-surface-container-high">
           <Image
@@ -118,7 +122,7 @@ export default function ProjectCard({
             </button>
           </div>
         </div>
-      </article>
+      </Card>
     </motion.div>
   );
 }

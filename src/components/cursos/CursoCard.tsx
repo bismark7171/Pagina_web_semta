@@ -6,6 +6,7 @@
 
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import type { ICurso } from "@/types";
+import { Card } from "@/components/ui/Card";
 
 interface Props {
   curso: ICurso;
@@ -18,7 +19,7 @@ export default function CursoCard({ curso, emailAsunto }: Props) {
   const mailto = `mailto:info@semta.org.bo?subject=${encodeURIComponent(asunto)}`;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
+    <Card hoverable className="group h-full -col -outline-variant">
       {/* Cabecera */}
       <div className="border-b border-outline-variant bg-primary/5 px-7 py-6">
         <div className="flex items-start justify-between gap-3">
@@ -106,6 +107,6 @@ export default function CursoCard({ curso, emailAsunto }: Props) {
           Inscribirme a este curso
         </a>
       </div>
-    </article>
+    </Card>
   );
 }

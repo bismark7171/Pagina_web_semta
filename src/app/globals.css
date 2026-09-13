@@ -64,27 +64,23 @@
 
 .dark {
   color-scheme: dark;
-  /* Fondos de superficie */
-  --background: #0f1510;
-  --surface: #0f1510;
-  --surface-container-lowest: #131a13;
-  --surface-container-low: #161e16;
-  --surface-container: #1c241c;
-  --surface-container-high: #222c22;
-  --surface-container-highest: #283228;
-  --surface-dim: #0a110a;
+  /* Fondos de superficie - Premium Dark Mode (Gris Neutro) */
+  --background: #09090b;
+  --surface: #09090b;
+  --surface-container-lowest: #18181b;
+  --surface-container-low: #27272a;
+  --surface-container: #3f3f46;
+  --surface-container-high: #52525b;
+  --surface-container-highest: #71717a;
 
-  /* Textos */
-  --on-background: #e1e3de;
-  --on-surface: #e1e3de;
-  --on-surface-variant: #8fa08c;
+  /* Contornos / Bordes */
+  --outline: #3f3f46;
+  --outline-variant: #27272a;
+  --on-surface: #e6e8e2;
+  --on-surface-variant: #99a896;
 
   /* Mantener el mismo color especial 'bosque' en fondos pero texto más claro */
-  --bosque: #0a1a0a;
-
-  /* Bordes */
-  --outline: #8fa08c;
-  --outline-variant: #3a4a3a;
+  --bosque: #0f1f0f;
 }
 
 @layer base {
