@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
+    "build": "NODE_ENV=production next build",
+    "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
@@ -14,8 +14,7 @@
     "test": "vitest run --config vitest.config.mts",
     "test:watch": "vitest --config vitest.config.mts",
     "test:coverage": "vitest run --config vitest.config.mts --coverage",
-    "validate": "npm run typecheck && npm run lint && npm run test",
-    "prepare": "husky"
+    "validate": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",

@@ -1,0 +1,6 @@
+{
+  "name": "SEMTA",
+  "description": "40+ años fortaleciendo la resiliencia agroecológica comunitaria, la seguridad hídrica y las tecnologías apropiadas en el Altiplano y Valles de Bolivia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

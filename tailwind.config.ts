@@ -1,148 +1,199 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+
+function withOpacity(varName: string) {
+  return ({ opacityValue }: { opacityValue?: string | number }) => {
+    if (opacityValue !== undefined) {
+      return `color-mix(in srgb, var(${varName}) calc(${opacityValue} * 100%), transparent)`;
+    }
+    return `var(${varName})`;
+  };
+}
 
 const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/data/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  // darkMode: 'class' → activa el modo oscuro añadiendo clase 'dark' al <html>
-  // No rompe nada existente — los colores actuales son el modo claro por defecto
   darkMode: "class",
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
-      colors: {
-        primary: "var(--primary)",
-        "on-primary": "var(--on-primary)",
-        "primary-container": "var(--primary-container)",
-        "on-primary-container": "var(--on-primary-container)",
-        "primary-fixed": "var(--primary-fixed)",
-        "primary-fixed-dim": "var(--primary-fixed-dim)",
-        "on-primary-fixed": "var(--on-primary-fixed)",
-        "on-primary-fixed-variant": "var(--on-primary-fixed-variant)",
-
-        secondary: "var(--secondary)",
-        "on-secondary": "var(--on-secondary)",
-        "secondary-container": "var(--secondary-container)",
-        "on-secondary-container": "var(--on-secondary-container)",
-        "secondary-fixed": "var(--secondary-fixed)",
-        "secondary-fixed-dim": "var(--secondary-fixed-dim)",
-        "on-secondary-fixed": "var(--on-secondary-fixed)",
-        "on-secondary-fixed-variant": "var(--on-secondary-fixed-variant)",
-
-        tertiary: "var(--tertiary)",
-        "on-tertiary": "var(--on-tertiary)",
-        "tertiary-container": "var(--tertiary-container)",
-        "on-tertiary-container": "var(--on-tertiary-container)",
-        "tertiary-fixed": "var(--tertiary-fixed)",
-        "tertiary-fixed-dim": "var(--tertiary-fixed-dim)",
-        "on-tertiary-fixed": "var(--on-tertiary-fixed)",
-        "on-tertiary-fixed-variant": "var(--on-tertiary-fixed-variant)",
-
-        error: "var(--error)",
-        "on-error": "var(--on-error)",
-        "error-container": "var(--error-container)",
-        "on-error-container": "var(--on-error-container)",
-
-        background: "var(--background)",
-        "on-background": "var(--on-background)",
-        surface: "var(--surface)",
-        "on-surface": "var(--on-surface)",
-        "surface-dim": "var(--surface-dim)",
-        "surface-bright": "var(--surface-bright)",
-        "surface-container-lowest": "var(--surface-container-lowest)",
-        "surface-container-low": "var(--surface-container-low)",
-        "surface-container": "var(--surface-container)",
-        "surface-container-high": "var(--surface-container-high)",
-        "surface-container-highest": "var(--surface-container-highest)",
-        "on-surface-variant": "var(--on-surface-variant)",
-        outline: "var(--outline)",
-        "outline-variant": "var(--outline-variant)",
-        "inverse-surface": "var(--inverse-surface)",
-        "inverse-on-surface": "var(--inverse-on-surface)",
-        "inverse-primary": "var(--inverse-primary)",
-
-        bosque: "var(--bosque)",
-        "verde-semta": "var(--verde-semta)",
+      maxWidth: {
+        "container-semta": "1280px",
       },
-      fontFamily: {
-        "display-lg": ['"Plus Jakarta Sans"', "sans-serif"],
-        "headline-xl": ['"Plus Jakarta Sans"', "sans-serif"],
-        "headline-lg": ['"Plus Jakarta Sans"', "sans-serif"],
-        "headline-md": ['"Plus Jakarta Sans"', "sans-serif"],
-        "headline-sm": ['"Plus Jakarta Sans"', "sans-serif"],
-        "body-lg": ['"Inter"', "sans-serif"],
-        "body-md": ['"Inter"', "sans-serif"],
-        "body-sm": ['"Inter"', "sans-serif"],
-        "label-lg": ['"Inter"', "sans-serif"],
-        "label-md": ['"Inter"', "sans-serif"],
-        "label-caps": ['"Inter"', "sans-serif"],
-      },
-      fontSize: {
-        "display-lg": [
-          "48px",
-          { lineHeight: "56px", letterSpacing: "-0.025em", fontWeight: "800" },
-        ],
-        "display-lg-mobile": [
-          "34px",
-          { lineHeight: "42px", letterSpacing: "-0.02em", fontWeight: "800" },
-        ],
-        "headline-xl": [
-          "36px",
-          { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" },
-        ],
-        "headline-xl-mobile": [
-          "28px",
-          { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" },
-        ],
-        "headline-lg": [
-          "28px",
-          { lineHeight: "36px", letterSpacing: "-0.015em", fontWeight: "700" },
-        ],
-        "headline-md": [
-          "22px",
-          { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" },
-        ],
-        "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "600" }],
-        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
-        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
-        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
-        "label-lg": ["14px", { lineHeight: "20px", fontWeight: "600", letterSpacing: "0.01em" }],
-        "label-md": ["12px", { lineHeight: "16px", fontWeight: "600", letterSpacing: "0.02em" }],
-        "label-caps": ["11px", { lineHeight: "16px", fontWeight: "700", letterSpacing: "0.08em" }],
-      },
-      spacing: {
-        "space-2xs": "0.25rem",
-        "space-xs": "0.5rem",
-        "space-sm": "0.75rem",
-        "space-md": "1rem",
-        "space-lg": "1.5rem",
-        "space-xl": "2rem",
-        "space-2xl": "3rem",
-        "space-3xl": "4rem",
-        "space-4xl": "6rem",
+      padding: {
         "gutter-desktop": "2rem",
         "gutter-mobile": "1rem",
       },
-      maxWidth: {
-        "container-semta": "1240px",
+      colors: {
+        primary: {
+          DEFAULT: withOpacity("--primary") as unknown as string,
+          container: withOpacity("--primary-container") as unknown as string,
+          fixed: withOpacity("--primary-fixed") as unknown as string,
+          "fixed-dim": withOpacity("--primary-fixed-dim") as unknown as string,
+        },
+        "on-primary": {
+          DEFAULT: withOpacity("--on-primary") as unknown as string,
+          container: withOpacity("--on-primary-container") as unknown as string,
+          fixed: withOpacity("--on-primary-fixed") as unknown as string,
+          "fixed-variant": withOpacity("--on-primary-fixed-variant") as unknown as string,
+        },
+        secondary: {
+          DEFAULT: withOpacity("--secondary") as unknown as string,
+          container: withOpacity("--secondary-container") as unknown as string,
+          fixed: withOpacity("--secondary-fixed") as unknown as string,
+          "fixed-dim": withOpacity("--secondary-fixed-dim") as unknown as string,
+        },
+        "on-secondary": {
+          DEFAULT: withOpacity("--on-secondary") as unknown as string,
+          container: withOpacity("--on-secondary-container") as unknown as string,
+          fixed: withOpacity("--on-secondary-fixed") as unknown as string,
+          "fixed-variant": withOpacity("--on-secondary-fixed-variant") as unknown as string,
+        },
+        tertiary: {
+          DEFAULT: withOpacity("--tertiary") as unknown as string,
+          container: withOpacity("--tertiary-container") as unknown as string,
+          fixed: withOpacity("--tertiary-fixed") as unknown as string,
+          "fixed-dim": withOpacity("--tertiary-fixed-dim") as unknown as string,
+        },
+        "on-tertiary": {
+          DEFAULT: withOpacity("--on-tertiary") as unknown as string,
+          container: withOpacity("--on-tertiary-container") as unknown as string,
+          fixed: withOpacity("--on-tertiary-fixed") as unknown as string,
+          "fixed-variant": withOpacity("--on-tertiary-fixed-variant") as unknown as string,
+        },
+        error: {
+          DEFAULT: withOpacity("--error") as unknown as string,
+          container: withOpacity("--error-container") as unknown as string,
+        },
+        "on-error": {
+          DEFAULT: withOpacity("--on-error") as unknown as string,
+          container: withOpacity("--on-error-container") as unknown as string,
+        },
+        background: withOpacity("--background") as unknown as string,
+        "on-background": withOpacity("--on-background") as unknown as string,
+        surface: {
+          DEFAULT: withOpacity("--surface") as unknown as string,
+          dim: withOpacity("--surface-dim") as unknown as string,
+          bright: withOpacity("--surface-bright") as unknown as string,
+          container: {
+            lowest: withOpacity("--surface-container-lowest") as unknown as string,
+            low: withOpacity("--surface-container-low") as unknown as string,
+            DEFAULT: withOpacity("--surface-container") as unknown as string,
+            high: withOpacity("--surface-container-high") as unknown as string,
+            highest: withOpacity("--surface-container-highest") as unknown as string,
+          },
+        },
+        "surface-dim": withOpacity("--surface-dim") as unknown as string,
+        "surface-bright": withOpacity("--surface-bright") as unknown as string,
+        "surface-container": withOpacity("--surface-container") as unknown as string,
+        "surface-container-lowest": withOpacity("--surface-container-lowest") as unknown as string,
+        "surface-container-low": withOpacity("--surface-container-low") as unknown as string,
+        "surface-container-high": withOpacity("--surface-container-high") as unknown as string,
+        "surface-container-highest": withOpacity("--surface-container-highest") as unknown as string,
+        "on-surface": {
+          DEFAULT: withOpacity("--on-surface") as unknown as string,
+          variant: withOpacity("--on-surface-variant") as unknown as string,
+        },
+        "on-surface-variant": withOpacity("--on-surface-variant") as unknown as string,
+        outline: {
+          DEFAULT: withOpacity("--outline") as unknown as string,
+          variant: withOpacity("--outline-variant") as unknown as string,
+        },
+        "outline-variant": withOpacity("--outline-variant") as unknown as string,
+        "inverse-surface": withOpacity("--inverse-surface") as unknown as string,
+        "inverse-on-surface": withOpacity("--inverse-on-surface") as unknown as string,
+        "inverse-primary": withOpacity("--inverse-primary") as unknown as string,
+        bosque: withOpacity("--bosque") as unknown as string,
+        "verde-semta": withOpacity("--verde-semta") as unknown as string,
+      },
+      fontFamily: {
+        sans: ["var(--font-body)", "Inter", "sans-serif"],
+        body: ["var(--font-body)", "Inter", "sans-serif"],
+        display: ["var(--font-display)", '"Plus Jakarta Sans"', "sans-serif"],
+        headline: ["var(--font-display)", '"Plus Jakarta Sans"', "sans-serif"],
+      },
+      fontSize: {
+        "display-lg": ["3.5rem", { lineHeight: "1.05", letterSpacing: "-0.02em", fontWeight: "800" }],
+        "display-md": ["2.75rem", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-sm": ["2.25rem", { lineHeight: "1.15", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-xl": ["2.25rem", { lineHeight: "1.15", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-lg": ["1.75rem", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-md": ["1.35rem", { lineHeight: "1.3", fontWeight: "600" }],
+        "headline-sm": ["1.125rem", { lineHeight: "1.35", fontWeight: "600" }],
+        "headline-xs": ["1rem", { lineHeight: "1.4", fontWeight: "600" }],
+        "body-lg": ["1.125rem", { lineHeight: "1.6" }],
+        "body-md": ["1rem", { lineHeight: "1.5" }],
+        "body-sm": ["0.875rem", { lineHeight: "1.5" }],
+        "body-xs": ["0.75rem", { lineHeight: "1.4" }],
+        "label-lg": ["0.9375rem", { lineHeight: "1.25", fontWeight: "600" }],
+        "label-md": ["0.875rem", { lineHeight: "1.25", fontWeight: "500" }],
+        "label-sm": ["0.8125rem", { lineHeight: "1.2", fontWeight: "500" }],
+        "label-xs": ["0.6875rem", { lineHeight: "1.15", fontWeight: "600" }],
+        "label-caps": ["0.75rem", { lineHeight: "1.2", letterSpacing: "0.08em", fontWeight: "700" }],
       },
       boxShadow: {
-        "card-semta": "0 1px 2px rgba(25,28,25,0.06), 0 8px 24px rgba(25,28,25,0.08)",
-        "soft-semta": "0 8px 30px rgba(44,62,46,0.10)",
-      },
-      animation: {
-        marquee: "marquee 28s linear infinite",
-      },
-      keyframes: {
-        marquee: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
-        },
+        "card-semta": "0 1px 3px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06)",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".font-display-lg": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "3.5rem",
+          lineHeight: "1.05",
+          letterSpacing: "-0.02em",
+          fontWeight: "800",
+        },
+        ".font-display-md": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "2.75rem",
+          lineHeight: "1.1",
+          letterSpacing: "-0.02em",
+          fontWeight: "700",
+        },
+        ".font-display-sm": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "2.25rem",
+          lineHeight: "1.15",
+          letterSpacing: "-0.01em",
+          fontWeight: "700",
+        },
+        ".font-headline-xl": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "2.25rem",
+          lineHeight: "1.15",
+          letterSpacing: "-0.01em",
+          fontWeight: "700",
+        },
+        ".font-headline-lg": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "1.75rem",
+          lineHeight: "1.2",
+          letterSpacing: "-0.01em",
+          fontWeight: "700",
+        },
+        ".font-headline-md": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "1.35rem",
+          lineHeight: "1.3",
+          fontWeight: "600",
+        },
+        ".font-headline-sm": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "1.125rem",
+          lineHeight: "1.35",
+          fontWeight: "600",
+        },
+        ".font-headline-xs": {
+          fontFamily: 'var(--font-display), "Plus Jakarta Sans", sans-serif',
+          fontSize: "1rem",
+          lineHeight: "1.4",
+          fontWeight: "600",
+        },
+      });
+    }),
+  ],
 };
 export default config;
