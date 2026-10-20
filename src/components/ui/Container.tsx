@@ -10,7 +10,7 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-container-semta px-gutter-desktop",
+        "mx-auto w-full max-w-container-semta px-gutter-mobile sm:px-gutter-desktop",
         className,
       )}
     >

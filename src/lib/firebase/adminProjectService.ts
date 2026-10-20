@@ -1,115 +1,97 @@
 /**
- * adminProjectService.ts
- * Lee proyectos desde Firestore usando Firebase Admin (servidor).
- * Se usa en Server Components de Next.js con ISR — los datos
- * se cachean y se regeneran automáticamente cada 5 minutos.
- *
- * El visitante NUNCA hace una petición directa a Firestore.
- * Solo el servidor de Vercel habla con Firebase.
+ * src/lib/firebase/adminProjectService.ts
+ * Lee proyectos, municipios, financiadores y tipos desde Firestore usando Firebase Admin (servidor).
  */
 
 import { getAdminDb } from "./admin";
-import type { FirestoreProject } from "./projectService";
+import type { FirestoreProject } from "@/types";
 
-const COL = "proyectos";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+const COL_PROYECTOS = "proyectos";
+const COL_MUNICIPIOS = "municipios";
+const COL_FINANCIADORES = "financiadores";
+const COL_TIPOS = "tipos_proyecto";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fromAdminDoc(doc: any): FirestoreProject {
+function fromAdminProjectDoc(doc: any): FirestoreProject {
   const d = doc.data() as Record<string, unknown>;
   return {
-    proyectoId:          (d.proyectoId  as string)  ?? doc.id,
-    nombre:              (d.nombre      as string)  ?? "",
-    tipoProyectoId:      (d.tipoProyectoId as string) ?? "",
-    municipioIds:        Array.isArray(d.municipioIds)  ? (d.municipioIds as string[])  : [],
-    comunidadIds:        Array.isArray(d.comunidadIds)  ? (d.comunidadIds as string[])  : [],
-    anio:                typeof d.anio === "number" ? d.anio : Number(d.anio) || 0,
-    descripcion:         (d.descripcion         as string) ?? "",
-    objetivo:            (d.objetivo            as string) ?? "",
-    beneficiarios:       (d.beneficiarios       as string) ?? "",
-    presupuesto:         typeof d.presupuesto === "number" ? d.presupuesto : Number(d.presupuesto) || 0,
-    moneda:              (d.moneda              as string) ?? "Bs",
-    financiadorId:       (d.financiadorId       as string) ?? "",
-    estado:              (d.estado              as string) ?? "PLANIFICADO",
-    resultados:          (d.resultados          as string) ?? "",
-    leccionesAprendidas: (d.leccionesAprendidas as string) ?? "",
-    presupuestoPorAnio:  (d.presupuestoPorAnio as Record<string, number>) ?? {},
-    imageUrls:           Array.isArray(d.imageUrls) ? (d.imageUrls as string[]) : [],
-    _docId:              doc.id,
+    _docId: doc.id,
+    id: (d.id as string) ?? doc.id,
+    titulo: (d.titulo as string) ?? (d.nombre as string) ?? "",
+    descripcion: (d.descripcion as string) ?? "",
+    estado: (d.estado as "Concluido" | "En Ejecución" | "Planificado") ?? "En Ejecución",
+    tipoId: (d.tipoId as string) ?? (d.tipo as string) ?? "",
+    municipioIds: Array.isArray(d.municipioIds)
+      ? (d.municipioIds as string[])
+      : d.municipio
+        ? [String(d.municipio)]
+        : [],
+    financiadorId: (d.financiadorId as string) ?? (d.financiador as string) ?? "",
+    beneficiarios: (d.beneficiarios as string) ?? "",
+    gestion: (d.gestion as string) ?? (d.anio as string) ?? new Date().getFullYear().toString(),
+    ubicacion: (d.ubicacion as string) ?? "",
+    imagenUrl: (d.imagenUrl as string) ?? (d.imagen as string) ?? "",
+    codigo: (d.codigo as string) ?? `ID: ${doc.id}`,
+    esPublico: typeof d.esPublico === "boolean" ? d.esPublico : true,
   };
 }
 
-// ─── Servicios públicos (solo lectura) ───────────────────────────────────────
-
-/**
- * Todos los proyectos — usado en /proyectos con ISR 5 min.
- * Equivalente a ProjectService.getAllProjects() del Flutter.
- */
 export async function adminGetAllProjects(): Promise<FirestoreProject[]> {
   const db = getAdminDb();
-  const snap = await db.collection(COL).get();
-  return snap.docs.map(fromAdminDoc);
+  let snap;
+  try {
+    snap = await db.collection(COL_PROYECTOS).where("esPublico", "==", true).get();
+  } catch (err) {
+    console.warn("[adminProjectService] Fallback general:", err);
+    snap = await db.collection(COL_PROYECTOS).get();
+  }
+  if (snap.empty) {
+    snap = await db.collection(COL_PROYECTOS).get();
+  }
+  return snap.docs.map(fromAdminProjectDoc);
 }
 
-/**
- * Proyecto individual por proyectoId — usado en /proyectos/[id] (futuro).
- */
-export async function adminGetProjectById(proyectoId: string): Promise<FirestoreProject | null> {
-  const db = getAdminDb();
-
-  // Buscar por campo proyectoId (igual que en Flutter)
-  const snap = await db
-    .collection(COL)
-    .where("proyectoId", "==", proyectoId)
-    .limit(1)
-    .get();
-
-  if (snap.empty) return null;
-  return fromAdminDoc(snap.docs[0]);
-}
-
-/**
- * Catálogos: financiadores (para resolver nombres en las cards)
- */
-export async function adminGetFinanciadores(): Promise<Record<string, string>> {
-  const db = getAdminDb();
-  const snap = await db.collection("financiadores").get();
-  const map: Record<string, string> = {};
-  snap.docs.forEach((doc) => {
-    const d = doc.data();
-    const id = (d.financiadorId as string) ?? doc.id;
-    map[id] = (d.nombre as string) ?? "";
-  });
-  return map;
-}
-
-/**
- * Catálogos: municipios (para resolver nombres en las cards)
- */
 export async function adminGetMunicipios(): Promise<Record<string, string>> {
-  const db = getAdminDb();
-  const snap = await db.collection("municipios").get();
-  const map: Record<string, string> = {};
-  snap.docs.forEach((doc) => {
-    const d = doc.data();
-    const id = (d.municipioId as string) ?? doc.id;
-    map[id] = (d.nombre as string) ?? "";
-  });
-  return map;
+  try {
+    const db = getAdminDb();
+    const snap = await db.collection(COL_MUNICIPIOS).get();
+    const map: Record<string, string> = {};
+    snap.docs.forEach((doc) => {
+      const d = doc.data();
+      map[doc.id] = (d.nombre as string) ?? doc.id;
+    });
+    return map;
+  } catch {
+    return {};
+  }
 }
 
-/**
- * Catálogos: tipos de proyecto (para filtros)
- */
+export async function adminGetFinanciadores(): Promise<Record<string, string>> {
+  try {
+    const db = getAdminDb();
+    const snap = await db.collection(COL_FINANCIADORES).get();
+    const map: Record<string, string> = {};
+    snap.docs.forEach((doc) => {
+      const d = doc.data();
+      map[doc.id] = (d.nombre as string) ?? doc.id;
+    });
+    return map;
+  } catch {
+    return {};
+  }
+}
+
 export async function adminGetTiposProyecto(): Promise<Record<string, string>> {
-  const db = getAdminDb();
-  const snap = await db.collection("tipos_proyecto").get();
-  const map: Record<string, string> = {};
-  snap.docs.forEach((doc) => {
-    const d = doc.data();
-    const id = (d.tipoProyectoId as string) ?? doc.id;
-    map[id] = (d.nombre as string) ?? "";
-  });
-  return map;
+  try {
+    const db = getAdminDb();
+    const snap = await db.collection(COL_TIPOS).get();
+    const map: Record<string, string> = {};
+    snap.docs.forEach((doc) => {
+      const d = doc.data();
+      map[doc.id] = (d.nombre as string) ?? doc.id;
+    });
+    return map;
+  } catch {
+    return {};
+  }
 }

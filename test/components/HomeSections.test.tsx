@@ -59,14 +59,15 @@ describe("PhotoEssay", () => {
 
   it("muestra el título de la sección", () => {
     render(<PhotoEssay />);
-    expect(screen.getByText(/Historias que el campo/)).toBeInTheDocument();
+    expect(screen.getByText(/Historias desde el/)).toBeInTheDocument();
   });
 
-  it("muestra las estadísticas rápidas", () => {
+  it("muestra la foto destacada y las crónicas", () => {
     render(<PhotoEssay />);
-    expect(screen.getByText("Activos en Campo")).toBeInTheDocument();
-    expect(screen.getByText("Familias Beneficiadas")).toBeInTheDocument();
-    expect(screen.getByText("14,280+")).toBeInTheDocument();
+    expect(screen.getByText(/Cosechando la lluvia/)).toBeInTheDocument();
+    const enlace = screen.getByText("Ver todas las crónicas").closest("a");
+    expect(enlace).not.toBeNull();
+    expect(enlace).toHaveAttribute("href", "/noticias");
   });
 });
 
@@ -83,15 +84,14 @@ describe("CooperantesCarousel", () => {
 
   it("muestra el titular de cooperación internacional", () => {
     render(<CooperantesCarousel />);
-    expect(screen.getByText(/Con el apoyo de la cooperación internacional/)).toBeInTheDocument();
+    expect(screen.getByText(/Cooperantes y Aliados Internacionales/)).toBeInTheDocument();
   });
 
-  it("lista los cooperantes (duplicados por el loop del marquee)", () => {
+  it("lista los cooperantes de la fuente única", () => {
     render(<CooperantesCarousel />);
-    // Cada nombre se repite para el efecto infinito.
-    expect(screen.getAllByText("COSUDE").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Unión Europea").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Misereor").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/COSUDE/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Unión Europea/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/MISEREOR/).length).toBeGreaterThanOrEqual(1);
   });
 });
 
@@ -115,10 +115,10 @@ describe("HomeNoticias", () => {
 
   it("muestra solo las 3 noticias más recientes", () => {
     render(<HomeNoticias />);
-    expect(screen.getByText(/Feria de semillas/)).toBeInTheDocument();
-    expect(screen.getByText(/Casa SEMTA inaugura/)).toBeInTheDocument();
-    // La más antigua (custodios de semillas, 2026-08-21) no debe aparecer.
-    expect(screen.queryByText(/Custodios de semillas/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Custodios de Semillas/)).toBeInTheDocument();
+    expect(screen.getByText(/atajados familiares/)).toBeInTheDocument();
+    // La más antigua (walipinis, 2024-12-05) no debe aparecer.
+    expect(screen.queryByText(/walipinis/i)).not.toBeInTheDocument();
   });
 });
 
@@ -137,7 +137,7 @@ describe("QuienesSomos", () => {
 
   it("resume la misión y enlaza a /nosotros", () => {
     render(<QuienesSomos />);
-    expect(screen.getByText(/co-construimos con comunidades/i)).toBeInTheDocument();
+    expect(screen.getByText(/seguridad hídrica/i)).toBeInTheDocument();
     const enlace = screen.getByText("Conocer nuestra historia").closest("a");
     expect(enlace).not.toBeNull();
     expect(enlace).toHaveAttribute("href", "/nosotros");

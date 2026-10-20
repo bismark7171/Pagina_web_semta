@@ -19,7 +19,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
@@ -68,9 +68,9 @@ describe("Smoke — UI primitivos", () => {
     }
   });
 
-  it("MaterialIcon renderiza un SVG decorativo", () => {
+  it("MaterialIcon renderiza la ligadura del icono", () => {
     const { container } = render(<MaterialIcon name="home" />);
-    expect(container.querySelector("svg")).toBeInTheDocument();
+    expect(container.textContent).toContain("home");
   });
 
   it("Modal cerrado no muestra contenido", () => {

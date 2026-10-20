@@ -1,49 +1,63 @@
-import { photoTags } from '@/data/photoTags';
-import { casaSemtaPhotogrid } from '@/data/casaSemta';
+/**
+ * src/data/noticias.ts
+ * Artículos y noticias institucionales de SEMTA.
+ */
 
-export interface INoticia {
+export interface NoticiaItem {
+  id: string;
   titulo: string;
   resumen: string;
   categoria: string;
-  fecha: string;
+  fecha: string; // ISO YYYY-MM-DD
   imagen: string;
   alt: string;
 }
 
-const [fotoRiego, fotoSemillas] = photoTags;
-const [,,, fotoBioinsumos, fotoComunidad] = casaSemtaPhotogrid;
-
-export const noticias: INoticia[] = [
+export const noticias: NoticiaItem[] = [
   {
-    titulo: "Escuelas de Campo: 18 comunidades activan sus sistemas de microriego",
-    resumen: "Familias de Batallas y Achacachi operan ya 14 sistemas de cosecha de agua y aspersión instalados en el marco del programa de resiliencia hídrica.",
-    categoria: "Altiplano",
-    fecha: "2026-09-04",
-    imagen: fotoRiego.imagen,
-    alt: "Capacitación en riego: " + fotoRiego.titulo,
+    id: "noticia-feria-semillas-2025",
+    titulo: "Encuentro Regional de Custodios de Semillas Nativas reúne a más de 20 comunidades",
+    resumen:
+      "Agricultoras y agricultores de Batallas, Achacachi y Tiwanaku intercambiaron más de 80 variedades nativas de papa, quinua y tarwi, fortaleciendo la soberanía alimentaria.",
+    categoria: "Biodiversidad",
+    fecha: "2025-03-28",
+    imagen:
+      "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=1200&q=80",
+    alt: "Feria comunitaria de intercambio de semillas nativas en el altiplano",
   },
   {
-    titulo: "Custodios de semillas: 42 comités resguardan la biodiversidad andina",
-    resumen: "El banco comunal de semillas nativas alcanzó 32 bio-insumos formulados y nuevas entregas de semilla certificada de quinua y papa nativa.",
-    categoria: "Agroecología",
-    fecha: "2026-08-21",
-    imagen: fotoSemillas.imagen,
-    alt: "Banco de semillas: " + fotoSemillas.titulo,
+    id: "noticia-cosecha-agua-mitigacion",
+    titulo: "Finaliza con éxito la instalación de 50 atajados familiares para cosecha de agua",
+    resumen:
+      "Las obras benefician a familias de zonas áridas de Oruro que sufren los efectos prolongados de la sequía andina, garantizando agua para hortalizas y ganado.",
+    categoria: "Seguridad Hídrica",
+    fecha: "2025-02-14",
+    imagen:
+      "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80",
+    alt: "Atajado familiar de agua de lluvia en el altiplano de Oruro",
   },
   {
-    titulo: "Casa SEMTA inaugura ciclo de talleres de bioconstrucción",
-    resumen: "El eje de tecnologías apropiadas abre inscripciones para el taller de adobe y tierra con enfoque de vivienda bioclimática.",
-    categoria: "Casa SEMTA",
-    fecha: "2026-09-12",
-    imagen: fotoBioinsumos.imagen,
-    alt: "Preparados ecológicos y bioinsumos en Casa SEMTA",
+    id: "noticia-liderazgo-mujeres-agroecologicas",
+    titulo: "Graduación de la tercera cohorte de la Escuela de Lideresas Comunitarias",
+    resumen:
+      "45 lideresas indígenas concluyeron el ciclo formativo en gobernanza del agua, administración comunitaria y biopreparados en Casa SEMTA.",
+    categoria: "Liderazgo",
+    fecha: "2025-01-20",
+    imagen:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80",
+    alt: "Lideresas campesinas recibiendo sus certificaciones en Casa SEMTA",
   },
   {
-    titulo: "Feria de semillas y bio-insumos convoca a la ciudadanía",
-    resumen: "El patio de Sopocachi recibirá a organizaciones campesinas y vecinos para el intercambio de semillas nativas y microorganismos.",
-    categoria: "Eventos",
-    fecha: "2026-10-01",
-    imagen: fotoComunidad.imagen,
-    alt: "Encuentro comunitario en el patio de Casa SEMTA",
+    id: "noticia-invernaderos-bioclimaticos",
+    titulo: "Nuevas pruebas técnicas demuestran 14°C de diferencia térmica en walipinis",
+    resumen:
+      "El equipo técnico evaluó el comportamiento térmico de los invernaderos subterráneos frente a heladas de -8°C en el altiplano central.",
+    categoria: "Investigación",
+    fecha: "2024-12-05",
+    imagen:
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=80",
+    alt: "Medición de temperatura interior en invernadero walipini",
   },
 ];
+
+export default noticias;

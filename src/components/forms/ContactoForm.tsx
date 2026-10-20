@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { enviarMensajeContacto } from "@/app/actions/contactActions";
 
 const inputCls =
-  "w-full rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-3 text-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+  "w-full rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-3 text-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50";
 
 export default function ContactoForm({
   asuntoInicial = "Consulta general",
@@ -20,6 +21,7 @@ export default function ContactoForm({
   successText?: string;
 }) {
   const [sent, setSent] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [form, setForm] = useState({
     nombre: "",
     email: "",
@@ -35,8 +37,26 @@ export default function ContactoForm({
 
   const submit = (ev: React.FormEvent) => {
     ev.preventDefault();
-    toast.success("Mensaje enviado", { description: "Te responderemos a la brevedad." });
-    setSent(true);
+
+    startTransition(async () => {
+      const result = await enviarMensajeContacto(form);
+
+      if (result.success) {
+        toast.success("Mensaje enviado", { description: "Te responderemos a la brevedad." });
+        setSent(true);
+        setForm({
+          nombre: "",
+          email: "",
+          telefono: "",
+          asunto: asuntoInicial,
+          mensaje: "",
+        });
+      } else {
+        toast.error("Error", {
+          description: result.error || "Ocurrió un error al enviar el mensaje.",
+        });
+      }
+    });
   };
 
   if (sent) {
@@ -77,6 +97,7 @@ export default function ContactoForm({
             onChange={set("nombre")}
             placeholder="María Condori"
             className={inputCls}
+            disabled={isPending}
           />
         </div>
         <div>
@@ -94,6 +115,7 @@ export default function ContactoForm({
             onChange={set("email")}
             placeholder="maria@correo.com"
             className={inputCls}
+            disabled={isPending}
           />
         </div>
       </div>
@@ -113,6 +135,7 @@ export default function ContactoForm({
             onChange={set("telefono")}
             placeholder="+591 7 000 0000"
             className={inputCls}
+            disabled={isPending}
           />
         </div>
         <div>
@@ -122,7 +145,13 @@ export default function ContactoForm({
           >
             Asunto
           </label>
-          <select id="cf-asunto" value={form.asunto} onChange={set("asunto")} className={inputCls}>
+          <select
+            id="cf-asunto"
+            value={form.asunto}
+            onChange={set("asunto")}
+            className={inputCls}
+            disabled={isPending}
+          >
             <option>Consulta general</option>
             <option>Alianzas y cooperación</option>
             <option>Reserva de espacios</option>
@@ -148,11 +177,12 @@ export default function ContactoForm({
           onChange={set("mensaje")}
           placeholder="Contanos en qué podemos ayudarte…"
           className={inputCls}
+          disabled={isPending}
         />
       </div>
 
-      <Button type="submit" iconRight="send" className="w-full sm:w-auto">
-        {submitText}
+      <Button type="submit" iconRight="send" className="w-full sm:w-auto" disabled={isPending}>
+        {isPending ? "Enviando..." : submitText}
       </Button>
     </form>
   );

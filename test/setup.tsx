@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import React from "react";
+import { vi } from "vitest";
 
 // ─── Mock: next/image ─────────────────────────────────────────────────────────
 // Evita errores de server-side rendering en jsdom
@@ -67,4 +68,11 @@ vi.mock("@/lib/firebase/config", () => ({
 
 vi.mock("@/lib/firebase/admin", () => ({
   getAdminDb: vi.fn(),
+  // Espeja la lógica real de admin.ts (las 3 env vars presentes)
+  isFirebaseAdminConfigured: () =>
+    Boolean(
+      process.env.FIREBASE_PROJECT_ID &&
+      process.env.FIREBASE_CLIENT_EMAIL &&
+      process.env.FIREBASE_PRIVATE_KEY,
+    ),
 }));

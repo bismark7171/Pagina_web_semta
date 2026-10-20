@@ -1,23 +1,31 @@
+/**
+ * src/data/siteDetails.ts
+ * Información institucional y metadatos globales del sitio SEMTA.
+ */
+
 export const siteDetails = {
   siteName: "SEMTA",
-  // En producción cambiar a https://semta.org.bo cuando tengas dominio propio
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pagina-web-semta.vercel.app",
+  siteDescription:
+    "40+ años fortaleciendo la resiliencia agroecológica comunitaria, la seguridad hídrica y las tecnologías apropiadas en el Altiplano y Valles de Bolivia.",
+  siteUrl: "https://semta-bolivia.org",
   metadata: {
-    title: "SEMTA · Siembra de Resiliencia Agroecológica en Bolivia",
+    title: "SEMTA · Tecnologías Apropiadas y Agroecología Comunitaria en Bolivia",
     description:
-      "SEMTA (Servicios Múltiples de Tecnologías Apropiadas). 40+ años fortaleciendo la resiliencia agroecológica comunitaria, la seguridad hídrica y las tecnologías apropiadas en el Altiplano y Valles de Bolivia.",
+      "40+ años fortaleciendo la resiliencia agroecológica comunitaria, la seguridad hídrica y las tecnologías apropiadas en el Altiplano y Valles de Bolivia.",
   },
   contacto: {
-    email: "info@semta.org.bo",
-    telefono: "+591 2 241 2345",
-    direccion: "Calle Alfredo Ascarrunz N° 2675, Sopocachi, La Paz, Bolivia",
-    horario: "Lun a Vie: 08:30 - 18:00",
+    email: "contacto@semta-bolivia.org",
+    telefono: "+591 2 2412345",
+    whatsapp: "+591 71512345",
+    direccion: "Av. Ecuador 2450, Sopocachi, La Paz - Bolivia",
+    horario: "Lunes a Viernes: 08:30 – 17:00",
   },
   redes: [
-    { nombre: "Facebook", icono: "facebook", url: "https://facebook.com" },
-    { nombre: "Instagram", icono: "instagram", url: "https://instagram.com" },
-    { nombre: "LinkedIn", icono: "linkedin", url: "https://linkedin.com" },
-    { nombre: "YouTube", icono: "youtube", url: "https://youtube.com" },
-    { nombre: "WhatsApp", icono: "whatsapp", url: "https://wa.me/59122412345" },
+    { nombre: "Facebook", url: "https://facebook.com/semtabolivia" },
+    { nombre: "YouTube", url: "https://youtube.com/@semtabolivia" },
+    { nombre: "Instagram", url: "https://instagram.com/semtabolivia" },
+    { nombre: "LinkedIn", url: "https://linkedin.com/company/semtabolivia" },
   ],
 };
+
+export default siteDetails;

@@ -1,72 +1,58 @@
 /**
- * cursosService.ts
- * Lee cursos desde Firestore usando Firebase Admin (Server Component).
- * Espejo exacto del modelo Curso en semta/lib/features/certificaciones/data/certificado.dart
- *
- * Colección Firestore: "cursos"
- * Campos: nombre, modulos[], fechaInicio, fechaFin, cargaHoraria, plataforma, activo
- *
- * La web SOLO lee (lectura pública de cursos activos).
- * La gestión completa (crear, emitir, verificar QR) la hace el sistema maestro Flutter.
+ * src/lib/firebase/cursosService.ts
+ * Lee cursos desde Firestore usando Firebase Admin (servidor).
  */
 
 import { getAdminDb } from "./admin";
 
-// ─── Tipo (espejo del modelo Dart) ───────────────────────────────────────────
+const COL_CURSOS = "cursos";
 
+/** Curso crudo de Firestore — los derivados (duración, estado, fechas) los calcula el adapter. */
 export interface FirestoreCurso {
+  _docId?: string;
   id: string;
   nombre: string;
-  modulos: string[];
-  fechaInicio: string; // ISO string
-  fechaFin: string;
-  cargaHoraria: number;
-  plataforma: string;
-  activo: boolean;
+  descripcion?: string;
+  modulos?: Array<string | { titulo: string; detalle?: string }>;
+  fechaInicio?: string; // ISO
+  fechaFin?: string; // ISO
+  cargaHoraria?: number;
+  plataforma?: string;
+  activo?: boolean;
 }
 
-// ─── Helper de parseo ─────────────────────────────────────────────────────────
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fromDoc(doc: any): FirestoreCurso {
+function fromAdminCursoDoc(doc: any): FirestoreCurso {
   const d = doc.data() as Record<string, unknown>;
-
-  // Firestore puede guardar fechas como ISO string o Timestamp
-  function parseDate(raw: unknown): string {
-    if (!raw) return new Date().toISOString();
-    if (typeof raw === "string") return raw;
-    // Firestore Admin Timestamp tiene .toDate()
-    if (typeof (raw as { toDate?: () => Date }).toDate === "function") {
-      return (raw as { toDate: () => Date }).toDate().toISOString();
-    }
-    return new Date().toISOString();
-  }
-
   return {
-    id: doc.id,
-    nombre: (d.nombre as string) ?? "",
-    modulos: Array.isArray(d.modulos) ? (d.modulos as string[]) : [],
-    fechaInicio: parseDate(d.fechaInicio),
-    fechaFin: parseDate(d.fechaFin),
-    cargaHoraria: typeof d.cargaHoraria === "number" ? d.cargaHoraria : 0,
-    plataforma: (d.plataforma as string) ?? "ZOOM",
-    activo: typeof d.activo === "boolean" ? d.activo : true,
+    _docId: doc.id,
+    id: (d.id as string) ?? doc.id,
+    nombre: (d.nombre as string) ?? (d.titulo as string) ?? "",
+    descripcion: (d.descripcion as string) ?? "",
+    modulos: Array.isArray(d.modulos)
+      ? (d.modulos as Array<string | { titulo: string; detalle?: string }>)
+      : [],
+    fechaInicio: (d.fechaInicio as string) ?? "",
+    fechaFin: (d.fechaFin as string) ?? "",
+    cargaHoraria: typeof d.cargaHoraria === "number" ? d.cargaHoraria : 40,
+    plataforma: (d.plataforma as string) ?? "",
+    activo:
+      typeof d.activo === "boolean"
+        ? d.activo
+        : typeof d.estaActivo === "boolean"
+          ? d.estaActivo
+          : true,
   };
 }
 
-// ─── Servicio ─────────────────────────────────────────────────────────────────
-
-/**
- * Obtiene todos los cursos ACTIVOS para mostrar en la web de marketing.
- * ISR 10 minutos — cuando se crea un curso en Flutter, la web lo muestra
- * en máximo 10 minutos sin deploy.
- */
 export async function adminGetCursosActivos(): Promise<FirestoreCurso[]> {
   const db = getAdminDb();
-  const snap = await db.collection("cursos").where("activo", "==", true).get();
-
-  return snap.docs.map(fromDoc).sort((a, b) => {
-    // Más recientes primero
-    return new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime();
-  });
+  let snap;
+  try {
+    snap = await db.collection(COL_CURSOS).get();
+  } catch (err) {
+    console.warn("[cursosService] Error al consultar cursos:", err);
+    return [];
+  }
+  return snap.docs.map(fromAdminCursoDoc);
 }

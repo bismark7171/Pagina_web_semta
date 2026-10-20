@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode } from "react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import MapaBolivia, { type MunicipioMapa } from "@/components/home/MapaBolivia";
 import MapaBoliviaInner from "@/components/home/MapaBoliviaInner";
@@ -20,6 +20,7 @@ vi.mock("react-leaflet", () => ({
   TileLayer: () => null,
   Marker: ({ children }: { children?: ReactNode }) => children,
   Tooltip: ({ children }: { children?: ReactNode }) => children,
+  Popup: ({ children }: { children?: ReactNode }) => children,
   ZoomControl: () => null,
 }));
 
@@ -89,18 +90,18 @@ describe("Lightbox — GaleriaEspacios", () => {
   });
 });
 
-describe("PhotoEssay — lightbox", () => {
-  it("abre el lightbox al tocar la foto principal", () => {
+describe("PhotoEssay — galería fotográfica", () => {
+  it("muestra la foto destacada y las secundarias", () => {
     render(<PhotoEssay />);
-    fireEvent.click(screen.getAllByLabelText(/Ampliar foto:/)[0]);
-    expect(screen.getByLabelText("Imagen 1 de 2")).toBeInTheDocument();
+    expect(screen.getByText(/Cosechando la lluvia/)).toBeInTheDocument();
+    expect(screen.getAllByLabelText(/Ampliar foto:/).length).toBeGreaterThanOrEqual(5);
   });
 
-  it("cierra el lightbox con el boton cerrar", () => {
+  it("enlaza a las crónicas de noticias", () => {
     render(<PhotoEssay />);
-    fireEvent.click(screen.getAllByLabelText(/Ampliar foto:/)[0]);
-    fireEvent.click(screen.getByLabelText("Cerrar visor"));
-    expect(screen.queryByLabelText("Imagen 1 de 2")).not.toBeInTheDocument();
+    const enlace = screen.getByText("Ver todas las crónicas").closest("a");
+    expect(enlace).not.toBeNull();
+    expect(enlace).toHaveAttribute("href", "/noticias");
   });
 });
 
@@ -136,24 +137,22 @@ describe("MapaBoliviaInner — mapa Leaflet", () => {
     { id: "sin-coords", nombre: "Desconocido", cantidadProyectos: 4 },
   ];
 
-  it("crea marcadores solo para municipios con coordenadas", () => {
+  it("crea marcadores para todos los municipios (con fallback de coords)", () => {
     render(<MapaBoliviaInner municipios={municipiosPrueba} />);
     expect(screen.getByText("Batallas")).toBeInTheDocument();
     expect(screen.getByText("Colomi")).toBeInTheDocument();
-    // El tercero no tiene coords ni fallback → no aparece
-    expect(screen.queryByText("Desconocido")).not.toBeInTheDocument();
+    // Sin coords conocidas se dispersa sobre el altiplano en vez de ocultarse
+    expect(screen.getByText("Desconocido")).toBeInTheDocument();
   });
 
   it("usa plural según la cantidad de proyectos", () => {
     render(<MapaBoliviaInner municipios={municipiosPrueba} />);
-    expect(screen.getByText("2 proyectos")).toBeInTheDocument();
-    expect(screen.getByText("1 proyecto")).toBeInTheDocument();
+    expect(screen.getByText(/2 proyectos SEMTA/)).toBeInTheDocument();
+    expect(screen.getByText(/1 proyecto SEMTA/)).toBeInTheDocument();
   });
 
-  it("muestra placeholder cuando no hay municipios con coords", () => {
-    render(
-      <MapaBoliviaInner municipios={[{ id: "sin-coords", nombre: "X", cantidadProyectos: 1 }]} />,
-    );
-    expect(screen.getByText(/Mapa de cobertura en preparación/)).toBeInTheDocument();
+  it("renderiza el mapa vacío sin marcadores", () => {
+    render(<MapaBoliviaInner municipios={[]} />);
+    expect(screen.queryByText("Batallas")).not.toBeInTheDocument();
   });
 });

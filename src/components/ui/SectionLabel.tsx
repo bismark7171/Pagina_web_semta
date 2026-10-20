@@ -1,24 +1,25 @@
+import React from "react";
 import { cn } from "@/lib/utils";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { MaterialIcon } from "./MaterialIcon";
 
-export function SectionLabel({
-  icono,
-  children,
-  className,
-}: {
+export interface SectionLabelProps extends React.HTMLAttributes<HTMLDivElement> {
   icono?: string;
   children: React.ReactNode;
-  className?: string;
-}) {
+}
+
+export function SectionLabel({ icono, children, className, ...props }: SectionLabelProps) {
   return (
-    <span
+    <div
       className={cn(
-        "inline-flex items-center gap-2 rounded-full bg-primary-container/10 px-4 py-1.5 text-label-caps uppercase tracking-[0.14em] text-primary",
+        "inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1 text-label-caps uppercase tracking-wider font-semibold text-primary",
         className,
       )}
+      {...props}
     >
-      {icono && <MaterialIcon name={icono} className="text-[1.2em]" />}
-      {children}
-    </span>
+      {icono && <MaterialIcon name={icono} className="text-[18px]" />}
+      <span>{children}</span>
+    </div>
   );
 }
+
+export default SectionLabel;

@@ -21,6 +21,7 @@ export default function GaleriaEspacios({ fotos }: Props) {
           onClick={() => setIndice(0)}
           aria-label={`Ampliar foto: ${principal.alt}`}
           className="group relative col-span-2 row-span-2 aspect-square cursor-zoom-in overflow-hidden rounded-3xl md:aspect-auto"
+          style={{ position: "relative" }}
         >
           <Image
             src={principal.imagen}
@@ -37,6 +38,7 @@ export default function GaleriaEspacios({ fotos }: Props) {
             onClick={() => setIndice(i + 1)}
             aria-label={`Ampliar foto: ${f.alt}`}
             className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-2xl"
+            style={{ position: "relative" }}
           >
             <Image
               src={f.imagen}

@@ -1,37 +1,112 @@
-import { quickStats } from '@/data/quickStats';
+/**
+ * src/data/nosotros.ts
+ * Contenido institucional sobre historia, misión, valores y trayectoria de SEMTA.
+ */
 
 export const nosotrosData = {
-  nombre: "SEMTA",
-  nombreCompleto: "Servicios Múltiples de Tecnologías Apropiadas",
   fundacion: 1982,
-  regiones: "Altiplano y Valles de La Paz y Cochabamba",
   resumen:
-    "Desde 1982 co-construimos con comunidades originario-campesinas tecnologías apropiadas, resiliencia hídrica y soberanía agroecológica frente al cambio climático.",
+    "Somos una organización no gubernamental boliviana comprometida con la soberanía alimentaria, la seguridad hídrica y el desarrollo agroecológico integral de los pueblos originarios.",
   enfoque:
-    "Nuestro trabajo no transfiere tecnología: la adapta con las familias en su territorio, respetando saberes locales y fortaleciendo la organización comunitaria.",
+    "A lo largo de más de cuatro décadas, SEMTA ha caminado junto a comunidades campesinas e indígenas del Altiplano y Valles Interandinos, desarrollando tecnologías apropiadas adaptadas a las realidades climáticas y culturales de Bolivia.",
   mision:
-    "Contribuir a la seguridad hídrica y alimentaria de familias campesinas e indígenas de Bolivia mediante tecnologías apropiadas, conservación de ecosistemas y fortalecimiento organizativo.",
+    "Promover el desarrollo sostenible y la resiliencia climática de comunidades campesinas e indígenas mediante la agroecología, la gestión integral del agua y tecnologías apropiadas con equidad y justicia social.",
   vision:
-    "Comunidades altoandinas resilientes al cambio climático, con soberanía alimentaria, agua garantizada y liderazgo propio, en alianza con la cooperación internacional y el Estado.",
+    "Comunidades rurales soberanas, organizadas y resilientes frente al cambio climático, que gestionan sus territorios y recursos naturales con equidad de género y autodeterminación.",
 };
 
 export const trayectoria = [
-  { anio: "1982", evento: "Nace SEMTA como asociación de técnicos comprometidos con tecnologías apropiadas para el mundo rural andino." },
-  { anio: "1989", evento: "Primeros sistemas de cosecha de agua y microriego por gravedad en la cuenca de Batallas." },
-  { anio: "1998", evento: "Se consolida la línea de agroecología: bancos de semillas y biofertilizantes comunitarios." },
-  { anio: "2008", evento: "Arranca el programa de manejo regenerativo de bofedales y camélidos altoandinos." },
-  { anio: "2015", evento: "Las tecnologías solares y energías limpias se suman como eje estratégico institucional." },
-  { anio: "2020", evento: "Inauguramos Casa SEMTA en Sopocachi como espacio demostrativo y de comercialización." },
-  { anio: "2026", evento: "53 proyectos ejecutados y 14,280+ familias beneficiadas en Altiplano y Valles." },
+  {
+    anio: "1982",
+    evento:
+      "Fundación de SEMTA por un equipo interdisciplinario pionero en tecnologías apropiadas para el altiplano.",
+  },
+  {
+    anio: "1994",
+    evento:
+      "Desarrollo y difusión masiva de invernaderos solares familiares (walipinis) adaptados al frío extremo del altiplano.",
+  },
+  {
+    anio: "2005",
+    evento:
+      "Implementación de programas de cosecha de agua de lluvia y microriego presurizado para comunidades vulnerables.",
+  },
+  {
+    anio: "2015",
+    evento:
+      "Lanzamiento de iniciativas integrales de soberanía alimentaria y empoderamiento de lideresas comunitarias.",
+  },
+  {
+    anio: "2024",
+    evento:
+      "Más de 40 años de trayectoria activa fortaleciendo la biblioteca digital, investigación aplicada y acción territorial.",
+  },
 ];
 
 export const valores = [
-  { icono: "handshake", titulo: "Trabajo con las comunidades", descripcion: "Decisiones técnicas consensuadas en asambleas comunales, no impuestas." },
-  { icono: "eco", titulo: "Cuidado de la Madre Tierra", descripcion: "Tecnologías de bajo impacto que restauran suelos, agua y biodiversidad." },
-  { icono: "verified", titulo: "Transparencia", descripcion: "Rendición de cuentas pública y auditorías externas con cooperación internacional." },
-  { icono: "psychology", titulo: "Saberes y conocimiento local", descripcion: "La tecnología se adapta a la cosmovisión y prácticas de cada comunidad." },
-  { icono: "diversity_1", titulo: "Equidad de género", descripcion: "Liderazgo y autonomía económica de las mujeres rurales como prioridad." },
-  { icono: "rocket_launch", titulo: "Innovación apropiada", descripcion: "Prototipado conjunto: del taller a la parcela, del monitor a la escala." },
+  {
+    titulo: "Saber Local y Diálogo Comunitario",
+    icono: "hearing",
+    descripcion:
+      "Respeto profundo por los saberes ancestrales de las naciones originarias y construcción dialógica del conocimiento.",
+  },
+  {
+    titulo: "Sostenibilidad y Resiliencia Ecológica",
+    icono: "eco",
+    descripcion:
+      "Técnicas que preservan los suelos, el agua, la biodiversidad y reducen la vulnerabilidad al cambio climático.",
+  },
+  {
+    titulo: "Equidad de Género y Liderazgo Femenino",
+    icono: "diversity_1",
+    descripcion:
+      "Participación protagónica de las mujeres en la toma de decisiones, propiedad económica y soberanía alimentaria.",
+  },
+  {
+    titulo: "Transparencia y Rendición de Cuentas",
+    icono: "verified_user",
+    descripcion:
+      "Ética, rigurosidad técnica y rendición transparente ante comunidades y entidades cooperantes.",
+  },
+  {
+    titulo: "Tecnología Apropiada y Accesible",
+    icono: "build",
+    descripcion:
+      "Soluciones tecnológicas de bajo costo, replicables con materiales locales y gobernadas por las familias.",
+  },
+  {
+    titulo: "Compromiso con la Justicia Social",
+    icono: "balance",
+    descripcion:
+      "Defensa activa de los derechos colectivos, el acceso equitativo a la tierra y los bienes comunes.",
+  },
 ];
 
-export const indicadoresInstitucionales = quickStats;
+export const indicadoresInstitucionales = [
+  {
+    icono: "schedule",
+    valor: "42",
+    label: "Años de servicio",
+    detalle: "Fundada en La Paz en 1982",
+  },
+  {
+    icono: "location_city",
+    valor: "35+",
+    label: "Municipios",
+    detalle: "En 4 departamentos del país",
+  },
+  {
+    icono: "assignment",
+    valor: "150+",
+    label: "Proyectos",
+    detalle: "Completados y evaluados",
+  },
+  {
+    icono: "groups",
+    valor: "12.000+",
+    label: "Familias",
+    detalle: "Beneficiadas directamente",
+  },
+];
+
+export default nosotrosData;

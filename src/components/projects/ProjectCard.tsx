@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { proyectoEstados } from "@/data/projects";
@@ -8,6 +7,7 @@ import type { IProject } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { FALLBACK_IMAGE } from "@/lib/images";
 import { Card } from "@/components/ui/Card";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 
 // ─── Hook: tilt 3D suave siguiendo el mouse ───────────────────────────────────
 
@@ -54,7 +54,10 @@ export default function ProjectCard({
   project: IProject;
   onOpen: () => void;
 }) {
-  const estado = proyectoEstados[project.estado];
+  const estado = proyectoEstados[project.estado] || {
+    color: "#0d631b",
+    tint: "rgba(13, 99, 27, 0.14)",
+  };
   const [imagen, setImagen] = useState(project.imagen);
   const { ref, rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(2.5);
 
@@ -78,24 +81,28 @@ export default function ProjectCard({
         className="group h-full -col -outline-variant shadow-card-semta transition-shadow hover:shadow-[0_8px_40px_rgba(13,99,27,0.18)]"
       >
         {/* Imagen */}
-        <div className="relative aspect-[16/9] overflow-hidden bg-surface-container-high">
-          <Image
-            src={imagen}
-            alt={project.alt}
-            fill
-            sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={() => setImagen(FALLBACK_IMAGE)}
-          />
-          {/* Badge estado */}
-          <span
-            className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label-md font-semibold"
-            style={{ backgroundColor: estado.tint, color: estado.color }}
-          >
-            <span className="size-1.5 rounded-full" style={{ backgroundColor: estado.color }} />
-            {project.estado}
-          </span>
-        </div>
+        <ZoomableImage
+          src={imagen}
+          alt={project.alt}
+          caption={`${project.titulo} · ${project.municipio}`}
+          aspectRatioClass="aspect-[16/9]"
+          sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (target.src !== FALLBACK_IMAGE) {
+              setImagen(FALLBACK_IMAGE);
+            }
+          }}
+          badge={
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label-md font-semibold backdrop-blur-sm"
+              style={{ backgroundColor: estado.tint, color: estado.color }}
+            >
+              <span className="size-1.5 rounded-full" style={{ backgroundColor: estado.color }} />
+              {project.estado}
+            </span>
+          }
+        />
 
         {/* Cuerpo */}
         <div className="flex flex-1 flex-col p-6">

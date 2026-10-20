@@ -9,9 +9,9 @@
  * páginas, etiquetas y botón de acceso al PDF.
  */
 
-import Image from "next/image";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Card } from "@/components/ui/Card";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 import type { ILibro } from "@/types";
 
 interface Props {
@@ -20,32 +20,29 @@ interface Props {
 }
 
 export default function DocumentoCard({ libro, destacado = false }: Props) {
-  // El botón de acción depende de si tenemos URL de PDF real
-  const tieneUrl = libro.urlPdf.length > 0;
+  const urlFinal = libro.urlPdf || "";
+  const tieneUrl = urlFinal.length > 0;
+  const portadaFinal = libro.portada || undefined;
+  const iconoFinal = libro.icono || "menu_book";
+  const etiquetasList = libro.etiquetas || [];
 
   return (
     <Card hoverable className={destacado ? "border-primary/30" : ""}>
       {/* Portada — solo si hay imagen de portada */}
-      {libro.portada && (
-        <div className="relative aspect-[16/7] overflow-hidden bg-surface-container-high">
-          <Image
-            src={libro.portada}
-            alt={`Portada de ${libro.titulo}`}
-            fill
-            sizes="(min-width:768px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => {
-              // Fallback si la imagen no carga — ocultar el elemento
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-            }}
-          />
-        </div>
+      {portadaFinal && (
+        <ZoomableImage
+          src={portadaFinal}
+          alt={`Portada de ${libro.titulo}`}
+          caption={`${libro.titulo}${libro.gestion && libro.gestion !== "—" ? ` (${libro.gestion})` : ""} · SEMTA`}
+          aspectRatioClass="aspect-[16/7]"
+          sizes="(min-width:768px) 50vw, 100vw"
+        />
       )}
 
       {/* Cabecera con icono y etiqueta */}
       <div className="flex items-start justify-between p-7">
         <span className="grid size-14 place-items-center rounded-2xl bg-primary-container/15 text-primary">
-          <MaterialIcon name={libro.icono} className="text-[28px]" />
+          <MaterialIcon name={iconoFinal} className="text-[28px]" />
         </span>
         <div className="flex flex-wrap gap-1.5">
           {destacado && (
@@ -53,9 +50,11 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
               Destacado
             </span>
           )}
-          <span className="rounded-full bg-surface-container px-3 py-1 text-label-caps uppercase tracking-wider text-on-surface-variant">
-            {libro.idioma}
-          </span>
+          {libro.idioma && (
+            <span className="rounded-full bg-surface-container px-3 py-1 text-label-caps uppercase tracking-wider text-on-surface-variant">
+              {libro.idioma}
+            </span>
+          )}
         </div>
       </div>
 
@@ -64,7 +63,7 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
         {/* Metadata: categoría y año */}
         <p className="text-label-caps uppercase tracking-wider text-on-surface-variant">
           {libro.categoria}
-          {libro.gestion !== "—" && ` · ${libro.gestion}`}
+          {libro.gestion && libro.gestion !== "—" && ` · ${libro.gestion}`}
           {libro.paginas > 0 && ` · ${libro.paginas} págs.`}
         </p>
 
@@ -82,9 +81,9 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
         </p>
 
         {/* Etiquetas (excluyendo "destacado" que ya se muestra arriba) */}
-        {libro.etiquetas.filter((t) => t.toLowerCase() !== "destacado").length > 0 && (
+        {etiquetasList.filter((t) => t.toLowerCase() !== "destacado").length > 0 && (
           <div className="mt-4 flex flex-wrap gap-1.5">
-            {libro.etiquetas
+            {etiquetasList
               .filter((t) => t.toLowerCase() !== "destacado")
               .slice(0, 4)
               .map((tag) => (
@@ -101,7 +100,7 @@ export default function DocumentoCard({ libro, destacado = false }: Props) {
         {/* Botón de acceso */}
         {tieneUrl ? (
           <a
-            href={libro.urlPdf}
+            href={urlFinal}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary/10 px-5 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-primary hover:text-on-primary"

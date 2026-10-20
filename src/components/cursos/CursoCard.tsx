@@ -74,17 +74,20 @@ export default function CursoCard({ curso, emailAsunto }: Props) {
               Módulos del curso
             </p>
             <ul className="mt-3 space-y-2">
-              {curso.modulos.map((modulo, i) => (
-                <li
-                  key={`${modulo}-${i}`}
-                  className="flex items-start gap-2.5 text-body-sm leading-snug text-on-surface"
-                >
-                  <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-label-caps font-bold text-primary">
-                    {i + 1}
-                  </span>
-                  {modulo}
-                </li>
-              ))}
+              {curso.modulos.map((modulo, i) => {
+                const tituloModulo = typeof modulo === "string" ? modulo : modulo.titulo;
+                return (
+                  <li
+                    key={`${tituloModulo}-${i}`}
+                    className="flex items-start gap-2.5 text-body-sm leading-snug text-on-surface"
+                  >
+                    <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-label-caps font-bold text-primary">
+                      {i + 1}
+                    </span>
+                    <span>{tituloModulo}</span>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

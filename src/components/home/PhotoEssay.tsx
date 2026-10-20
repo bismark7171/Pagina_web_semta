@@ -1,114 +1,153 @@
 "use client";
 
-import { useState } from "react";
-import { photoTags } from "@/data/photoTags";
-import { quickStats } from "@/data/quickStats";
-import Image from "next/image";
+import React from "react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
-import { FadeIn } from "@/components/ui/FadeIn";
-import { CountUp } from "@/components/ui/CountUp";
-import { Lightbox } from "@/components/ui/Lightbox";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
+import { Button } from "@/components/ui/Button";
+
+interface PhotoItem {
+  imagen: string;
+  alt: string;
+  titulo: string;
+  comunidad: string;
+  categoria: string;
+}
+
+const ENSAYO_FOTOS: PhotoItem[] = [
+  {
+    imagen:
+      "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=85",
+    alt: "Comunarias y técnicos supervisando atajado de agua en Batallas",
+    titulo: "Cosechando la lluvia antes del invierno",
+    comunidad: "Comunidad Calasaya, Batallas",
+    categoria: "Seguridad Hídrica",
+  },
+  {
+    imagen:
+      "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=800&q=80",
+    alt: "Preparación comunitaria de bokashi y bioles enriquecidos",
+    titulo: "Suelos vivos para la soberanía alimentaria",
+    comunidad: "Achacachi, La Paz",
+    categoria: "Agroecología",
+  },
+  {
+    imagen:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+    alt: "Asociación de productoras agroecológicas en asamblea",
+    titulo: "Gobernanza participativa y lideresas andinas",
+    comunidad: "Tiwanaku, Ingavi",
+    categoria: "Liderazgo",
+  },
+  {
+    imagen:
+      "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=800&q=80",
+    alt: "Instalación de paneles fotovoltaicos para bombeo comunal",
+    titulo: "Energía solar que impulsa los huertos",
+    comunidad: "Patacamaya, Aroma",
+    categoria: "Energía Solar",
+  },
+  {
+    imagen:
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80",
+    alt: "Interior de un invernadero subterráneo walipini con lechugas y tomates",
+    titulo: "Walipinis: calor andino frente a -10°C",
+    comunidad: "Viacha, Ingavi",
+    categoria: "Tecnología Apropiada",
+  },
+];
 
 export default function PhotoEssay() {
-  const [main, secondary] = photoTags;
-  const [fotoAbierta, setFotoAbierta] = useState<number | null>(null);
-
-  const fotosLightbox = photoTags.map((p) => ({ imagen: p.imagen, alt: p.titulo }));
+  const [destacada, ...secundarias] = ENSAYO_FOTOS;
 
   return (
-    <section className="relative overflow-hidden bg-bosque py-20">
-      <div
-        className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-primary/20 blur-3xl"
-        aria-hidden="true"
-      />
+    <section className="bg-surface-container-lowest py-20">
       <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <FadeIn>
-            <div>
-              <SectionLabel className="bg-white/10 text-primary-fixed" icono="photo_library">
-                La Huella en el Territorio
-              </SectionLabel>
-              <h2 className="mt-4 font-display-lg-mobile text-4xl font-extrabold leading-[1.1] text-white">
-                Historias que el campo <span className="text-primary-fixed">cuenta</span>
-              </h2>
-              <p className="mt-5 max-w-xl text-body-lg leading-relaxed text-white/75">
-                Cada proyecto deja capacidad instalada, organización fortalecida y agua que vuelve a
-                la vida. Documentamos el cambio con las propias comunidades.
-              </p>
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <SectionLabel icono="photo_library">Fotoperiodismo de Campo</SectionLabel>
+            <h2 className="mt-3 font-headline-xl text-on-surface">
+              Historias desde el <span className="text-primary">Territorio</span>
+            </h2>
+            <p className="mt-2 max-w-xl text-body-lg text-on-surface-variant">
+              Imágenes reales de las familias, paisajes y tecnologías que construyen resiliencia en
+              el Altiplano.
+            </p>
+          </div>
 
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                {quickStats.map((s) => (
-                  <div
-                    key={s.label}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-5 transition-colors duration-300 hover:bg-white/10"
-                  >
-                    <div className="flex items-center gap-2 text-primary-fixed">
-                      <MaterialIcon name={s.icono} className="text-[20px]" />
-                      <span className="font-label-caps uppercase tracking-wider text-white/60">
-                        {s.label}
-                      </span>
-                    </div>
-                    <p className="mt-2 font-display-lg text-3xl font-extrabold tracking-tight text-white">
-                      <CountUp value={s.valor} duration={1.2} />
-                    </p>
-                    <p className="mt-1 text-body-sm text-white/60">{s.detalle}</p>
-                  </div>
-                ))}
+          <Button href="/noticias" variant="outline" icono="visibility">
+            Ver todas las crónicas
+          </Button>
+        </div>
+
+        {/* Grilla fotográfica con ZoomableImage encapsulado */}
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-12">
+          {/* Foto Principal Destacada (7 columnas) */}
+          <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface md:col-span-7">
+            <ZoomableImage
+              src={destacada.imagen}
+              alt={destacada.alt}
+              caption={`${destacada.titulo} — ${destacada.comunidad}`}
+              aspectRatioClass="aspect-[16/11] md:aspect-[16/10]"
+              sizes="(min-width: 768px) 60vw, 100vw"
+              gallery={ENSAYO_FOTOS.map((f) => ({
+                imagen: f.imagen,
+                alt: f.alt,
+                caption: `${f.titulo} (${f.comunidad})`,
+              }))}
+              galleryIndex={0}
+              badge={
+                <span className="rounded-full bg-black/60 px-3 py-1 text-label-xs font-semibold text-white backdrop-blur">
+                  {destacada.categoria}
+                </span>
+              }
+            />
+            <div className="p-6">
+              <span className="text-label-caps uppercase tracking-wider text-primary">
+                {destacada.comunidad}
+              </span>
+              <h3 className="mt-1 font-headline-md text-on-surface">{destacada.titulo}</h3>
+              <p className="mt-1 text-body-sm text-on-surface-variant">{destacada.alt}</p>
+            </div>
+          </div>
+
+          {/* 4 Fotos Secundarias en Grid 2x2 (5 columnas) */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:col-span-5">
+            {secundarias.map((foto, idx) => (
+              <div
+                key={foto.titulo}
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-outline-variant bg-surface"
+              >
+                <ZoomableImage
+                  src={foto.imagen}
+                  alt={foto.alt}
+                  caption={`${foto.titulo} — ${foto.comunidad}`}
+                  aspectRatioClass="aspect-[4/3]"
+                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 25vw, 100vw"
+                  gallery={ENSAYO_FOTOS.map((f) => ({
+                    imagen: f.imagen,
+                    alt: f.alt,
+                    caption: `${f.titulo} (${f.comunidad})`,
+                  }))}
+                  galleryIndex={idx + 1}
+                  badge={
+                    <span className="rounded-full bg-black/60 px-2.5 py-0.5 text-label-xs font-medium text-white backdrop-blur">
+                      {foto.categoria}
+                    </span>
+                  }
+                />
+                <div className="p-3.5">
+                  <p className="text-label-xs font-semibold text-primary truncate">
+                    {foto.comunidad}
+                  </p>
+                  <h4 className="mt-0.5 font-headline-xs text-on-surface text-body-sm font-semibold line-clamp-1">
+                    {foto.titulo}
+                  </h4>
+                </div>
               </div>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.15}>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setFotoAbierta(0)}
-                aria-label={`Ampliar foto: ${main.titulo}`}
-                className="group relative block aspect-[16/11] w-full cursor-zoom-in overflow-hidden rounded-3xl"
-              >
-                <Image
-                  src={main.imagen}
-                  alt={main.titulo}
-                  fill
-                  sizes="(min-width:1024px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/45 px-4 py-1.5 text-label-md font-semibold text-white backdrop-blur">
-                  <span className="size-2 rounded-full bg-primary-fixed" />
-                  {main.badge}: {main.titulo}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFotoAbierta(1)}
-                aria-label={`Ampliar foto: ${secondary.titulo}`}
-                className="group absolute -bottom-8 -left-4 hidden aspect-[3/4] w-56 cursor-zoom-in overflow-hidden rounded-2xl border-4 border-bosque shadow-2xl md:block"
-              >
-                <Image
-                  src={secondary.imagen}
-                  alt={secondary.titulo}
-                  fill
-                  sizes="224px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pb-3 pt-8 text-label-md font-semibold text-white">
-                  {secondary.badge}
-                </span>
-              </button>
-            </div>
-          </FadeIn>
+            ))}
+          </div>
         </div>
       </div>
-
-      {fotoAbierta !== null && (
-        <Lightbox
-          fotos={fotosLightbox}
-          indiceInicial={fotoAbierta}
-          onClose={() => setFotoAbierta(null)}
-        />
-      )}
     </section>
   );
 }

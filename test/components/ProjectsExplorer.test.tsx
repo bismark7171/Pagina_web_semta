@@ -15,31 +15,51 @@ import type { IProject } from "@/types";
 
 // Mock de framer-motion: desactiva animaciones en tests para que
 // AnimatePresence retire los elementos del DOM inmediatamente.
-vi.mock("framer-motion", () => ({
-  motion: {
-    div: ({
-      children,
-      layout: _layout,
-      initial: _i,
-      animate: _a,
-      exit: _e,
-      transition: _t,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & {
+vi.mock("framer-motion", () => {
+  const MockDiv = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement> & {
       children?: React.ReactNode;
       layout?: boolean;
       initial?: unknown;
       animate?: unknown;
       exit?: unknown;
       transition?: unknown;
-    }) => React.createElement("div", props, children),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) =>
-    React.createElement(React.Fragment, null, children),
-  useMotionValue: () => ({ set: () => {} }),
-  useSpring: (v: unknown) => v,
-  useTransform: () => ({ get: () => 0 }),
-}));
+      whileHover?: unknown;
+      whileTap?: unknown;
+    }
+  >(
+    (
+      {
+        children,
+        layout: _layout,
+        initial: _i,
+        animate: _a,
+        exit: _e,
+        transition: _t,
+        whileHover: _wh,
+        whileTap: _wt,
+        ...props
+      },
+      ref,
+    ) => React.createElement("div", { ...props, ref }, children),
+  );
+  MockDiv.displayName = "MockDiv";
+
+  const MockAnimatePresence = ({ children }: { children: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children);
+  MockAnimatePresence.displayName = "MockAnimatePresence";
+
+  return {
+    motion: {
+      div: MockDiv,
+    },
+    AnimatePresence: MockAnimatePresence,
+    useMotionValue: () => ({ set: () => {} }),
+    useSpring: (v: unknown) => v,
+    useTransform: () => ({ get: () => 0 }),
+  };
+});
 
 // ─── Dataset de prueba ────────────────────────────────────────────────────────
 

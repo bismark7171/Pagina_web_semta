@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 import { Button } from "@/components/ui/Button";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { noticias } from "@/data/noticias";
@@ -49,15 +49,18 @@ export default function HomeNoticias() {
           {recientes.map((n, i) => (
             <FadeIn key={n.titulo} delay={i * 0.1}>
               <Card hoverable className="group h-full -col -outline-variant">
-                <div className="relative aspect-[16/10]">
-                  <Image
-                    src={n.imagen}
-                    alt={n.alt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
+                <ZoomableImage
+                  src={n.imagen}
+                  alt={n.alt}
+                  aspectRatioClass="aspect-[16/10]"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  gallery={recientes.map((item) => ({
+                    imagen: item.imagen,
+                    alt: item.alt,
+                    caption: item.titulo,
+                  }))}
+                  galleryIndex={i}
+                />
                 <div className="flex flex-1 flex-col p-6">
                   <span className="rounded-full bg-primary/10 px-3 py-1 text-label-caps uppercase tracking-wider text-primary w-fit">
                     {n.categoria}

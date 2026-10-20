@@ -23,15 +23,15 @@ function getAdminApp(): App {
   }
 
   // Las variables de entorno privadas (sin NEXT_PUBLIC_) solo existen en el servidor
-  const projectId  = process.env.FIREBASE_PROJECT_ID!;
+  const projectId = process.env.FIREBASE_PROJECT_ID!;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL!;
   // Vercel guarda el private key con \n escapados — hay que reemplazarlos
-  const privateKey  = (process.env.FIREBASE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
+  const privateKey = (process.env.FIREBASE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
 
   if (!projectId || !clientEmail || !privateKey) {
     throw new Error(
       "Faltan variables de entorno Firebase Admin. " +
-      "Configura FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY."
+        "Configura FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY.",
     );
   }
 
@@ -41,6 +41,14 @@ function getAdminApp(): App {
   });
 
   return adminApp;
+}
+
+export function isFirebaseAdminConfigured(): boolean {
+  return Boolean(
+    process.env.FIREBASE_PROJECT_ID &&
+    process.env.FIREBASE_CLIENT_EMAIL &&
+    process.env.FIREBASE_PRIVATE_KEY,
+  );
 }
 
 export function getAdminDb(): Firestore {

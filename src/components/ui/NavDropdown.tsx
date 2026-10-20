@@ -1,95 +1,99 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { MaterialIcon } from "./MaterialIcon";
 import { cn } from "@/lib/utils";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
-import { menuItems } from "@/data/menuItems";
 
-type MenuItem = (typeof menuItems)[number];
+export interface NavDropdownItem {
+  label: string;
+  href: string;
+  desc?: string;
+  icono?: string;
+}
 
-export function NavDropdown({
-  item,
-  isActive,
-}: {
-  item: MenuItem;
-  isActive: (href: string) => boolean;
-}) {
+export interface NavDropdownProps {
+  label: string;
+  href?: string;
+  items: NavDropdownItem[];
+  className?: string;
+}
+
+export function NavDropdown({ label, href, items, className }: NavDropdownProps) {
   const [open, setOpen] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const enter = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setOpen(true);
-  };
-  const leave = () => {
-    timerRef.current = setTimeout(() => setOpen(false), 80);
-  };
-
-  const isCurrent = isActive(item.href);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="relative" onMouseEnter={enter} onMouseLeave={leave}>
-      <button
-        type="button"
-        className={cn(
-          "relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 xl:px-3 py-2",
-          "text-[13px] 2xl:text-label-lg transition-all",
-          isCurrent
-            ? "bg-primary font-semibold text-white shadow-sm dark:text-on-primary"
-            : "text-on-surface/80 hover:bg-primary/5 hover:text-primary",
-        )}
-        aria-expanded={open}
-      >
-        {item.label}
-        <MaterialIcon
-          name="expand_more"
-          className={cn("text-[1.1em] transition-transform duration-200", open && "rotate-180")}
-        />
-      </button>
+    <div
+      ref={ref}
+      className={cn("relative inline-block text-left", className)}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      {href ? (
+        <Link
+          href={href}
+          onClick={() => setOpen(false)}
+          className="inline-flex items-center gap-1 py-2 text-label-md font-semibold text-on-surface hover:text-primary transition-colors"
+        >
+          <span>{label}</span>
+          <MaterialIcon
+            name="keyboard_arrow_down"
+            className={cn("text-[18px] transition-transform duration-200", open && "rotate-180")}
+          />
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="inline-flex items-center gap-1 py-2 text-label-md font-semibold text-on-surface hover:text-primary transition-colors"
+          aria-expanded={open}
+        >
+          <span>{label}</span>
+          <MaterialIcon
+            name="keyboard_arrow_down"
+            className={cn("text-[18px] transition-transform duration-200", open && "rotate-180")}
+          />
+        </button>
+      )}
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.97 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute left-0 top-full z-50 mt-1.5 w-[260px]"
-            onMouseEnter={enter}
-            onMouseLeave={leave}
-          >
-            {/* Triángulo conector visual */}
-            <div className="mb-1 ml-6 w-fit">
-              <div className="mx-auto h-2 w-4 overflow-hidden">
-                <div className="mx-auto h-2.5 w-2.5 rotate-45 border-l border-t border-outline-variant/60 bg-surface-container-lowest" />
+      {open && (
+        <div className="absolute left-0 mt-2 w-64 origin-top-left rounded-2xl border border-outline-variant bg-surface-container-lowest p-2 shadow-xl z-50">
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-surface-container"
+            >
+              {item.icono && (
+                <MaterialIcon
+                  name={item.icono}
+                  className="text-[20px] text-primary shrink-0 mt-0.5"
+                />
+              )}
+              <div>
+                <p className="text-label-md font-semibold text-on-surface">{item.label}</p>
+                {item.desc && (
+                  <p className="text-body-sm text-on-surface-variant line-clamp-1">{item.desc}</p>
+                )}
               </div>
-            </div>
-            <ul className="flex flex-col gap-1 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-2 shadow-[0_16px_32px_rgba(13,99,27,0.12)] dark:border-white/10 dark:bg-surface-container dark:shadow-none">
-              {item.children!.map((child) => {
-                const isChildActive = isActive(child.href);
-                return (
-                  <li key={child.label}>
-                    <Link
-                      href={child.href}
-                      className={cn(
-                        "block rounded-xl px-4 py-2.5 text-label-lg transition-colors",
-                        isChildActive
-                          ? "bg-primary font-semibold text-white shadow-sm dark:text-on-primary"
-                          : "text-on-surface/80 hover:bg-primary hover:text-white hover:shadow-sm dark:text-on-surface/90 dark:hover:bg-primary dark:hover:text-white",
-                      )}
-                      onClick={() => setOpen(false)}
-                    >
-                      {child.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+export default NavDropdown;

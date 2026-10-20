@@ -5,11 +5,16 @@
  * SERVER (Next.js):  import { adminGetAllProjects } from "@/lib/firebase/adminProjectService"
  */
 
-export { db }                     from "./config";
-export type { FirestoreProject }  from "./projectService";
+export { db } from "./config";
+export type { FirestoreProject } from "./projectService";
 
 // Admin (solo servidor — NO importar en Client Components)
-export { adminGetAllProjects, adminGetProjectById, adminGetFinanciadores, adminGetMunicipios, adminGetTiposProyecto } from "./adminProjectService";
+export {
+  adminGetAllProjects,
+  adminGetFinanciadores,
+  adminGetMunicipios,
+  adminGetTiposProyecto,
+} from "./adminProjectService";
 export {
   getAllProjects,
   getProjectById,
@@ -17,14 +22,14 @@ export {
   getProjectsByType,
   getProjectsByEstado,
   getProjectsByYear,
-}                                 from "./projectService";
+} from "./projectService";
 
 export type {
   FirestoreMunicipio,
   FirestoreComunidad,
   FirestoreTipoProyecto,
   FirestoreFinanciador,
-}                                 from "./catalogService";
+} from "./catalogService";
 export {
   getMunicipios,
   getMunicipioById,
@@ -37,4 +42,4 @@ export {
   getEstadosProyecto,
   getMonedas,
   getAnios,
-}                                 from "./catalogService";
+} from "./catalogService";

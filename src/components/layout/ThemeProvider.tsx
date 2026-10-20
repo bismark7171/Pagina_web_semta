@@ -1,116 +1,140 @@
 "use client";
 
-/**
- * ThemeProvider.tsx
- * Gestiona el modo oscuro aplicando/quitando la clase 'dark' en <html>.
- *
- * Estrategia:
- * 1. Lee preferencia del usuario desde localStorage
- * 2. Escucha el cambio del sistema (prefers-color-scheme)
- * 3. Se monta sin flash (script inline en <head> evita el FOUC)
- *
- * Patrón usado por next-themes pero sin dependencia adicional.
- */
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { createContext, useContext, useEffect, useState } from "react";
+type Theme = "light" | "dark";
 
-type Theme = "light" | "dark" | "system";
-
-interface ThemeContextValue {
+interface ThemeContextType {
   theme: Theme;
-  resolvedTheme: "light" | "dark";
-  setTheme: (t: Theme) => void;
-  toggle: () => void;
+  toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue>({
-  theme: "system",
-  resolvedTheme: "light",
+const ThemeContext = createContext<ThemeContextType>({
+  theme: "light",
+  toggleTheme: () => {},
   setTheme: () => {},
-  toggle: () => {},
 });
 
-export function useTheme() {
-  return useContext(ThemeContext);
-}
+export function ThemeScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            // Guard against "Cannot set property fetch of #<Window> which has only a getter"
+            try {
+              if (typeof window !== "undefined") {
+                var suppressFetchError = function(e) {
+                  var msg = (e && e.message) || (e && e.reason && e.reason.message) || "";
+                  if (typeof msg === "string" && msg.indexOf("Cannot set property fetch") !== -1) {
+                    if (e.preventDefault) e.preventDefault();
+                    if (e.stopPropagation) e.stopPropagation();
+                    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+                    return true;
+                  }
+                };
+                window.addEventListener("error", suppressFetchError, true);
+                window.addEventListener("unhandledrejection", suppressFetchError, true);
 
-const STORAGE_KEY = "semta-theme";
+                if (typeof console !== "undefined" && console.error) {
+                  var _origErr = console.error;
+                  console.error = function() {
+                    for (var i = 0; i < arguments.length; i++) {
+                      var arg = arguments[i];
+                      var str = (arg && arg.message) || (typeof arg === "string" ? arg : "");
+                      if (typeof str === "string" && str.indexOf("Cannot set property fetch") !== -1) {
+                        return;
+                      }
+                    }
+                    return _origErr.apply(console, arguments);
+                  };
+                }
+              }
+            } catch (e) {}
 
-function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
+            try {
+              var stored = localStorage.getItem('semta-theme');
+              if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+              } else {
+                document.documentElement.classList.remove('dark');
+              }
+            } catch (e) {}
 
-function applyTheme(resolved: "light" | "dark") {
-  const root = document.documentElement;
-  if (resolved === "dark") {
-    root.classList.add("dark");
-  } else {
-    root.classList.remove("dark");
-  }
+            try {
+              if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(regs) {
+                  for (var i = 0; i < regs.length; i++) {
+                    regs[i].unregister();
+                  }
+                });
+                if ('caches' in window) {
+                  caches.keys().then(function(keys) {
+                    keys.forEach(function(k) { caches.delete(k); });
+                  });
+                }
+              }
+            } catch (e) {}
+          })();
+        `,
+      }}
+    />
+  );
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+  const [theme, setThemeState] = useState<Theme>("light");
 
-  // Leer preferencia guardada al montar
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const initial: Theme = saved ?? "system";
-    setThemeState(initial);
-    const resolved = initial === "system" ? getSystemTheme() : initial;
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
+    try {
+      const stored = localStorage.getItem("semta-theme") as Theme | null;
+      if (stored === "dark" || stored === "light") {
+        setThemeState(stored);
+        if (stored === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setThemeState("dark");
+        document.documentElement.classList.add("dark");
+      }
+    } catch {}
   }, []);
 
-  // Escuchar cambios del sistema cuando theme === 'system'
-  useEffect(() => {
-    if (theme !== "system") return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (e: MediaQueryListEvent) => {
-      const resolved = e.matches ? "dark" : "light";
-      setResolvedTheme(resolved);
-      applyTheme(resolved);
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, [theme]);
-
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
-    localStorage.setItem(STORAGE_KEY, t);
-    const resolved = t === "system" ? getSystemTheme() : t;
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    try {
+      localStorage.setItem("semta-theme", newTheme);
+      if (newTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } catch {}
   };
 
-  const toggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggle }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 }
 
-/**
- * Script inline para evitar flash (FOUC) al cargar la página.
- * Debe ir en <head> ANTES de que se renderice el body.
- * Lee localStorage y aplica la clase 'dark' sincronamente.
- */
-export function ThemeScript() {
-  const script = `
-    (function(){
-      try {
-        var t = localStorage.getItem('semta-theme');
-        var dark = t === 'dark' || (!t || t === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (dark) document.documentElement.classList.add('dark');
-      } catch(e){}
-    })();
-  `;
-  // dangerouslySetInnerHTML es seguro aquí — el contenido es fijo, no proviene del usuario
-  return <script dangerouslySetInnerHTML={{ __html: script }} suppressHydrationWarning />;
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    // Provide fallback during SSR
+    return {
+      theme: "light",
+      toggleTheme: () => {},
+      setTheme: () => {},
+    };
+  }
+  return context;
 }

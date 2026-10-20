@@ -1,13 +1,40 @@
-import type { IMetrica } from '@/types';
+/**
+ * src/data/impactMetrics.ts
+ * Métricas de impacto institucional acumuladas.
+ */
 
-export const impactMetrics: IMetrica[] = [
+export interface ImpactMetric {
+  icono: string;
+  valor: string;
+  titulo: string;
+  descripcion: string;
+  footer: string;
+}
+
+export const impactMetrics: ImpactMetric[] = [
   {
-    valor: "+25.000", icono: "groups", titulo: "Personas fortalecidas", descripcion: "Familias campesinas e indígenas con capacidades técnicas instaladas y liderazgo comunitario.", footer: "Cobertura acumulada en 7 municipios",
+    icono: "nature_people",
+    valor: "40+",
+    titulo: "Años de trabajo continuo",
+    descripcion:
+      "Cuatro décadas de investigación aplicada, diálogo de saberes y acción territorial en Bolivia.",
+    footer: "Desde 1982 en territorio andino",
   },
   {
-    valor: "25", icono: "water_ph", titulo: "Comunidades con infraestructura", descripcion: "Obras activas de cosecha de agua pluvial, reservorios andinos, atajados y microriego tecnificado.", footer: "Sistemas hídricos en operación 100%",
+    icono: "assignment_turned_in",
+    valor: "150+",
+    titulo: "Proyectos ejecutados",
+    descripcion:
+      "Iniciativas integrales de riego, agroecología, gobernanza comunitaria y tecnologías solares.",
+    footer: "100% auditados y concluidos",
   },
   {
-    valor: "53", icono: "verified_user", titulo: "Proyectos ejecutados", descripcion: "Programas de resiliencia climática y desarrollo integral auditados con cooperación internacional.", footer: "Alianzas con contrapartes locales",
+    icono: "pin_drop",
+    valor: "35",
+    titulo: "Municipios atendidos",
+    descripcion: "Presencia profunda en provincias de La Paz, Oruro, Potosí y Cochabamba.",
+    footer: "Cobertura acumulada en 35 municipios",
   },
 ];
+
+export default impactMetrics;

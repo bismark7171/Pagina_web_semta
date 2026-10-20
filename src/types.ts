@@ -25,6 +25,25 @@ export interface IProject {
   imagen: string;
   alt: string;
   codigo: string;
+  destacado?: boolean;
+}
+
+/** Proyecto normalizado del servicio Admin (servidor) — lo que consumen page.tsx y KPIs. */
+export interface FirestoreProject {
+  _docId: string;
+  id: string;
+  titulo: string;
+  descripcion: string;
+  estado: "Concluido" | "En Ejecución" | "Planificado";
+  tipoId: string;
+  municipioIds: string[];
+  financiadorId: string;
+  beneficiarios: string;
+  gestion: string;
+  ubicacion: string;
+  imagenUrl: string;
+  codigo: string;
+  esPublico?: boolean;
 }
 
 export interface IHeroButton {
@@ -133,6 +152,7 @@ export interface ICasaFaq {
 export interface ICasaPhoto {
   imagen: string;
   alt: string;
+  caption?: string;
 }
 
 export interface INavItem {
@@ -148,11 +168,14 @@ export interface INavItem {
 export interface ICurso {
   id: string;
   nombre: string;
-  modulos: string[];
+  descripcion: string;
+  modulos: Array<string | { titulo: string; detalle?: string }>;
   fechaInicio: string; // "DD/MM/YYYY"
   fechaFin: string;
   cargaHoraria: number; // horas
   plataforma: string;
+  modalidad: string;
+  ctaTexto: string;
   /** Duración formateada: "3 semanas", "2 meses", etc. */
   duracionTexto: string;
   /** true si fechaFin >= hoy */

@@ -47,7 +47,7 @@ describe("CasaHero", () => {
 
   it("muestra la dirección de casa también en métricas", () => {
     render(<CasaHero />);
-    expect(screen.getByText(/Alfredo Ascarrunz/)).toBeInTheDocument();
+    expect(screen.getByText(/Av\. Ecuador 2450/)).toBeInTheDocument();
   });
 });
 

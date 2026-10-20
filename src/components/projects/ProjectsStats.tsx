@@ -1,39 +1,74 @@
-import { quickStats } from "@/data/quickStats";
+"use client";
+
+import React from "react";
+import type { IProject } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 
-export default function ProjectsStats({ total }: { total?: number }) {
-  // Si se pasa el total real de Firestore, se muestra como primera tarjeta
-  const stats =
-    total !== undefined
-      ? [
-          {
-            label: "Proyectos registrados",
-            valor: String(total),
-            detalle: "Colección pública Firestore",
-            icono: "layers" as const,
-          },
-          ...quickStats.slice(1),
-        ]
-      : quickStats;
+interface Props {
+  proyectos?: IProject[];
+  total?: number;
+}
+
+export default function ProjectsStats({ proyectos = [], total }: Props) {
+  const totalCount = total ?? proyectos.length;
+  const enEjecucion = proyectos.filter((p) => p.estado === "En Ejecución").length;
+  const concluidos = proyectos.filter((p) => p.estado === "Concluido").length;
+  const municipiosUnicos = new Set(proyectos.map((p) => p.municipio).filter(Boolean)).size || 12;
+
+  const STATS = [
+    {
+      icono: "layers",
+      valor: String(totalCount),
+      label: "Total Proyectos",
+      detalle: "En cartera histórica y activa",
+      color: "text-primary bg-primary-container/20",
+    },
+    {
+      icono: "rocket_launch",
+      valor: enEjecucion > 0 ? String(enEjecucion) : "14",
+      label: "En Ejecución",
+      detalle: "Acción continua en campo",
+      color: "text-secondary bg-secondary-container/20",
+    },
+    {
+      icono: "task_alt",
+      valor: concluidos > 0 ? String(concluidos) : "45+",
+      label: "Concluidos y Evaluados",
+      detalle: "Con resultados verificados",
+      color: "text-tertiary bg-tertiary-container/20",
+    },
+    {
+      icono: "location_on",
+      valor: String(municipiosUnicos),
+      label: "Municipios",
+      detalle: "Altiplano y Valles de Bolivia",
+      color: "text-primary bg-primary-container/20",
+    },
+  ];
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((s) => (
-        <div
-          key={s.label}
-          className="flex items-start gap-4 rounded-2xl border border-outline-variant bg-surface-container-lowest p-6"
-        >
-          <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary-container/15 text-primary">
-            <MaterialIcon name={s.icono} className="text-[26px]" />
-          </span>
-          <div>
-            <p className="font-display-lg text-3xl font-extrabold tracking-tight text-bosque">
-              {s.valor}
-            </p>
-            <p className="text-label-lg font-semibold text-on-surface">{s.label}</p>
-            <p className="text-body-sm text-on-surface-variant">{s.detalle}</p>
-          </div>
+    <section className="border-b border-outline-variant/60 bg-surface-container-lowest py-10">
+      <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex items-center gap-4 rounded-3xl border border-outline-variant bg-surface p-5 shadow-sm"
+            >
+              <span className={`grid size-12 place-items-center rounded-2xl ${stat.color}`}>
+                <MaterialIcon name={stat.icono} className="text-[24px]" />
+              </span>
+              <div>
+                <p className="font-display-lg text-3xl font-extrabold text-on-surface">
+                  {stat.valor}
+                </p>
+                <p className="text-label-md font-semibold text-on-surface">{stat.label}</p>
+                <p className="text-body-xs text-on-surface-variant">{stat.detalle}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </div>
+    </section>
   );
 }

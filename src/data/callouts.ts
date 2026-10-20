@@ -1,12 +1,54 @@
-import type { ICallout } from '@/types';
+/**
+ * src/data/callouts.ts
+ * Secciones de llamada a la acción dual (Formación / Casa SEMTA).
+ */
 
-export const callouts: ICallout[] = [
+export interface CalloutItem {
+  titulo: string;
+  icono: string;
+  chip: string;
+  descripcion: string;
+  checks: string[];
+  botones: Array<{
+    text: string;
+    path: string;
+    tipo: "primary" | "ghost";
+  }>;
+}
+
+export const callouts: CalloutItem[] = [
   {
-    chip: "Formación de Nuevos Talentos", titulo: "Pasantías Profesionales de 340 Horas", descripcion: "Convocatoria abierta para estudiantes y egresados de Agronomía, Ingeniería Ambiental, Sociología y Trabajo Social. Adquiere experiencia directa en comunidades del Altiplano con tutoría técnica especializada.", icono: "school",
-    checks: ["Certificación institucional verificable con código único QR.", "Cobertura de viáticos de campo en zonas de intervención.", "Tutoría académica para tesis o proyectos de grado."], botones: [{ text: "Postular a la Convocatoria", path: "/pasantias", tipo: "primary" }, { text: "Verificar certificación", path: "/verificar-certificado", tipo: "ghost" }],
+    titulo: "Formación Técnica y Certificaciones Comunitarias",
+    icono: "school",
+    chip: "Capacitación Práctica",
+    descripcion:
+      "Programas certificados en agroecología andina, gestión integral del agua y diseño de tecnologías limpias con validez académica.",
+    checks: [
+      "Modalidades presenciales y semipresenciales en campo",
+      "Carga horaria verificable con código QR institucional",
+      "Docentes técnicos con experiencia de más de 20 años en terreno",
+    ],
+    botones: [
+      { text: "Explorar cursos", path: "/cursos", tipo: "primary" },
+      { text: "Verificar certificación", path: "/verificar-certificado", tipo: "ghost" },
+    ],
   },
   {
-    chip: "Espacio Institucional en Sopocachi", titulo: "Casa SEMTA: Encuentro & Bio-Mercado", descripcion: "Un punto de articulación ecológica en el corazón de La Paz. Ofrecemos alquiler de salones equipados para talleres de la sociedad civil, vivero demostrativo y tienda permanente de productos agroecológicos campesinos.", icono: "storefront",
-    checks: ["Salón auditorio bioclimático con proyector y audio profesional.", "Catering agroecológico con insumos de huertos propios.", "Punto de venta directo para organizaciones campesinas."], botones: [{ text: "Reservar Salones o Visitas", path: "/casa-semta", tipo: "secondary" }],
+    titulo: "Casa SEMTA: Espacio de Hospedaje y Encuentros",
+    icono: "cottage",
+    chip: "Hospedaje & Eventos",
+    descripcion:
+      "Alojamiento sostenible, auditorio equipado y áreas verdes en Sopocachi (La Paz) para talleres, investigadores y delegaciones.",
+    checks: [
+      "Habitaciones confortables en zona residencial céntrica",
+      "Salas para conferencias, talleres y asambleas institucionales",
+      "Comedor con alimentación saludable e ingredientes agroecológicos",
+    ],
+    botones: [
+      { text: "Conocer Casa SEMTA", path: "/casa-semta", tipo: "primary" },
+      { text: "Reservar sala", path: "/reservar", tipo: "ghost" },
+    ],
   },
 ];
+
+export default callouts;

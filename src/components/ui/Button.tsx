@@ -1,105 +1,75 @@
+import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { MaterialIcon } from "./MaterialIcon";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "ghost"
-  | "outline"
-  | "solid";
+export type ButtonVariant = "primary" | "secondary" | "solid" | "ghost" | "outline";
+export type ButtonSize = "sm" | "md" | "lg";
 
-const variants: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-on-primary hover:bg-primary-container",
-  secondary: "bg-secondary text-on-secondary hover:bg-secondary-container",
-  ghost: "text-primary hover:bg-primary/10",
-  outline:
-    "border-2 border-primary text-primary hover:bg-primary hover:text-on-primary",
-  solid: "bg-primary text-white",
-};
-
-const baseCls =
-  "group inline-flex items-center justify-center gap-2 rounded-full text-label-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60";
-
-const sizes: Record<ButtonSize, string> = {
-  lg: "px-8 py-4",
-  md: "px-6 py-3",
-  sm: "px-4 py-2",
-};
-
-export type ButtonSize = "lg" | "md" | "sm";
-
-interface ButtonBaseProps {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  href?: string;
   icono?: string;
   iconRight?: string;
-  className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-interface LinkButtonProps extends ButtonBaseProps {
-  href: string;
-  target?: string;
-  rel?: string;
-}
+const variantStyles: Record<ButtonVariant, string> = {
+  primary:
+    "bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container shadow-sm",
+  solid: "bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container",
+  secondary: "bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80",
+  ghost: "bg-transparent text-primary hover:bg-primary/10",
+  outline: "border border-outline bg-transparent text-on-surface hover:bg-surface-container",
+};
 
-interface ActionButtonProps extends ButtonBaseProps {
-  onClick?: () => void;
-  type?: "button" | "submit";
-  disabled?: boolean;
-}
+const sizeStyles: Record<ButtonSize, string> = {
+  sm: "px-3.5 py-1.5 text-label-sm gap-1.5 rounded-full",
+  md: "px-5 py-2.5 text-label-md gap-2 rounded-full",
+  lg: "px-7 py-3 text-label-lg gap-2.5 rounded-full",
+};
 
-export function Button(props: LinkButtonProps): React.ReactElement;
-export function Button(props: ActionButtonProps): React.ReactElement;
 export function Button({
   variant = "primary",
   size = "md",
+  href,
   icono,
   iconRight,
-  className,
   children,
-  ...rest
-}: LinkButtonProps | ActionButtonProps) {
-  const cls = cn(baseCls, sizes[size], variants[variant], className);
+  className,
+  type = "button",
+  disabled,
+  ...props
+}: ButtonProps) {
+  const classes = cn(
+    "inline-flex items-center justify-center font-semibold transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none",
+    variantStyles[variant] ?? variantStyles.primary,
+    sizeStyles[size] ?? sizeStyles.md,
+    className,
+  );
 
-  if ("href" in rest && rest.href !== undefined) {
-    const { href, target, rel } = rest as LinkButtonProps;
+  const content = (
+    <>
+      {icono && <MaterialIcon name={icono} className="text-[1.15em] shrink-0" />}
+      {children}
+      {iconRight && <MaterialIcon name={iconRight} className="text-[1.15em] shrink-0" />}
+    </>
+  );
+
+  if (href) {
     return (
-      <Link
-        href={href}
-        target={target}
-        rel={rel}
-        className={cls}
-      >
-        {icono && <MaterialIcon name={icono} className="text-[1.1em]" />}
-        <span>{children}</span>
-        {iconRight && (
-          <MaterialIcon
-            name={iconRight}
-            className="text-[1.1em] transition-transform duration-200 group-hover:translate-x-0.5"
-          />
-        )}
+      <Link href={href} className={classes}>
+        {content}
       </Link>
     );
   }
 
-  const { onClick, type = "button", disabled } = rest as ActionButtonProps;
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={cls}
-    >
-      {icono && <MaterialIcon name={icono} className="text-[1.1em]" />}
-      <span>{children}</span>
-      {iconRight && (
-        <MaterialIcon
-          name={iconRight}
-          className="text-[1.1em] transition-transform duration-200 group-hover:translate-x-0.5"
-        />
-      )}
+    <button type={type} disabled={disabled} className={classes} {...props}>
+      {content}
     </button>
   );
 }
+
+export default Button;

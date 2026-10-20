@@ -1,145 +1,142 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/PageHero";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
-import { Button } from "@/components/ui/Button";
 import { nosotrosData, trayectoria, valores, indicadoresInstitucionales } from "@/data/nosotros";
+import { Card } from "@/components/ui/Card";
+import QuienesSomos from "@/components/home/QuienesSomos";
 
 export const metadata: Metadata = {
-  title: "Nosotros · Quiénes Somos",
+  title: "Nosotros · Trayectoria y Equipo",
   description:
-    "SEMTA, Servicios Múltiples de Tecnologías Apropiadas: 40+ años de resiliencia agroecológica y seguridad hídrica en el Altiplano y Valles de Bolivia.",
+    "Más de cuatro décadas acompañando a comunidades campesinas e indígenas de Bolivia en soberanía alimentaria, agua y tecnologías apropiadas.",
 };
 
 export default function NosotrosPage() {
   return (
-    <>
-      <PageHero
-        crumbs={[{ label: "Inicio", href: "/" }, { label: "Nosotros", href: "/nosotros" }]}
-        badge={{ icono: "handshake", text: "Institucional" }}
-        titulo={
-          <>
-            Quiénes <span className="text-primary-fixed">somos</span>
-          </>
-        }
-        descripcion={nosotrosData.resumen}
-      />
-
-      <section className="bg-background py-16">
+    <div className="bg-background">
+      {/* Hero institucional */}
+      <section className="bg-bosque py-20 text-white">
         <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <div className="grid items-start gap-12 lg:grid-cols-[1.1fr_1fr]">
-            <div>
-              <SectionLabel icono="history_edu">Trayectoria</SectionLabel>
-              <h2 className="mt-4 font-headline-xl text-on-surface">
-                Más de {new Date().getFullYear() - nosotrosData.fundacion} años
-                en el territorio
-              </h2>
-              <p className="mt-3 text-body-lg text-on-surface-variant">
-                {nosotrosData.enfoque}
-              </p>
-            </div>
-
-            <ol className="relative space-y-6 border-l border-outline-variant pl-8">
-              {trayectoria.map((t) => (
-                <li key={t.anio} className="relative">
-                  <span className="absolute -left-[45px] grid size-4 place-items-center rounded-full border-2 border-primary bg-surface-container-lowest">
-                    <span className="size-1.5 rounded-full bg-primary" />
-                  </span>
-                  <p className="font-label-caps uppercase tracking-wider text-primary">
-                    {t.anio}
-                  </p>
-                  <p className="mt-1 text-body-md leading-relaxed text-on-surface-variant">
-                    {t.evento}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
+          <SectionLabel icono="history" className="text-primary-fixed">
+            Desde 1982 en Bolivia
+          </SectionLabel>
+          <h1 className="mt-4 max-w-3xl font-headline-xl text-3xl sm:text-5xl font-extrabold leading-tight">
+            Más de 40 años junto a los pueblos originarios
+          </h1>
+          <p className="mt-6 max-w-2xl text-body-lg text-white/80 leading-relaxed">
+            {nosotrosData.resumen}
+          </p>
         </div>
       </section>
 
-      <section className="bg-surface-container-lowest py-16">
-        <div className="mx-auto grid w-full max-w-container-semta gap-6 px-gutter-desktop lg:grid-cols-2">
-          <article className="rounded-3xl bg-primary-container p-8 text-on-primary-container lg:p-10">
-            <MaterialIcon name="flag" className="text-[30px]" />
-            <h3 className="mt-4 font-headline-md">Misión</h3>
-            <p className="mt-2 text-body-lg leading-relaxed opacity-95">
-              {nosotrosData.mision}
-            </p>
-          </article>
-          <article className="rounded-3xl bg-secondary-container p-8 text-on-secondary-container lg:p-10">
-            <MaterialIcon name="visibility" className="text-[30px]" />
-            <h3 className="mt-4 font-headline-md">Visión</h3>
-            <p className="mt-2 text-body-lg leading-relaxed opacity-95">
-              {nosotrosData.vision}
-            </p>
-          </article>
-        </div>
-      </section>
+      {/* Quienes Somos Sección */}
+      <QuienesSomos />
 
-      <section id="valores" className="bg-background py-16">
+      {/* Indicadores */}
+      <section className="py-16 bg-surface-container-low border-y border-outline-variant">
         <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <SectionLabel icono="favorite">Principios</SectionLabel>
-          <h2 className="mt-4 max-w-xl font-headline-xl text-on-surface">
-            Valores que guían cada programa
-          </h2>
-
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {valores.map((v) => (
-              <article
-                key={v.titulo}
-                className="rounded-3xl border border-outline-variant bg-surface-container-lowest p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta"
-              >
-                <span className="grid size-12 place-items-center rounded-2xl bg-primary-container/15 text-primary">
-                  <MaterialIcon name={v.icono} className="text-[26px]" />
-                </span>
-                <h3 className="mt-5 font-headline-md text-on-surface">
-                  {v.titulo}
-                </h3>
-                <p className="mt-2 text-body-sm leading-relaxed text-on-surface-variant">
-                  {v.descripcion}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-bosque py-16 text-white">
-        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-            <div>
-              <p className="text-label-caps uppercase tracking-[0.14em] text-primary-fixed">
-                Impacto acumulado
-              </p>
-              <h2 className="mt-2 font-headline-xl">La institución en cifras</h2>
-            </div>
-            <Button href="/proyectos" variant="ghost" className="text-white hover:bg-white/10">
-              Ver el banco de proyectos
-            </Button>
-          </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {indicadoresInstitucionales.map((s) => (
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {indicadoresInstitucionales.map((ind) => (
               <div
-                key={s.label}
-                className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                key={ind.label}
+                className="text-center p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant"
               >
-                <MaterialIcon
-                  name={s.icono}
-                  className="text-[26px] text-primary-fixed"
-                />
-                <p className="mt-3 font-display-lg text-4xl font-extrabold tracking-tight">
-                  {s.valor}
+                <MaterialIcon name={ind.icono} className="text-4xl text-primary mx-auto mb-2" />
+                <p className="font-headline-xl text-3xl sm:text-4xl font-extrabold text-on-surface">
+                  {ind.valor}
                 </p>
-                <p className="text-label-lg font-semibold text-white/85">
-                  {s.label}
-                </p>
-                <p className="text-body-sm text-white/60">{s.detalle}</p>
+                <p className="font-bold text-label-md text-on-surface mt-1">{ind.label}</p>
+                <p className="text-body-xs text-on-surface-variant mt-1">{ind.detalle}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-    </>
+
+      {/* Misión y Visión */}
+      <section className="py-20 bg-background">
+        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+          <div className="grid gap-8 md:grid-cols-2">
+            <Card className="p-8 border-primary/20 bg-surface-container-lowest shadow-sm">
+              <span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+                <MaterialIcon name="flag" className="text-2xl" />
+              </span>
+              <h2 className="mt-4 font-headline-md text-2xl font-bold text-on-surface">
+                Misión Institucional
+              </h2>
+              <p className="mt-4 text-body-md text-on-surface-variant leading-relaxed">
+                {nosotrosData.mision}
+              </p>
+            </Card>
+
+            <Card className="p-8 border-secondary/20 bg-surface-container-lowest shadow-sm">
+              <span className="grid size-12 place-items-center rounded-2xl bg-secondary/10 text-secondary">
+                <MaterialIcon name="visibility" className="text-2xl" />
+              </span>
+              <h2 className="mt-4 font-headline-md text-2xl font-bold text-on-surface">
+                Visión de Futuro
+              </h2>
+              <p className="mt-4 text-body-md text-on-surface-variant leading-relaxed">
+                {nosotrosData.vision}
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Valores */}
+      <section className="py-20 bg-surface-container-lowest">
+        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <SectionLabel icono="verified">Principios Rectores</SectionLabel>
+            <h2 className="mt-3 font-headline-xl text-on-surface">
+              Nuestros <span className="text-primary">Valores Fundamentales</span>
+            </h2>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {valores.map((val) => (
+              <div
+                key={val.titulo}
+                className="rounded-2xl border border-outline-variant bg-surface p-6"
+              >
+                <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary mb-4">
+                  <MaterialIcon name={val.icono} className="text-xl" />
+                </span>
+                <h3 className="font-bold text-title-md text-on-surface">{val.titulo}</h3>
+                <p className="mt-2 text-body-sm text-on-surface-variant leading-relaxed">
+                  {val.descripcion}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trayectoria Cronológica */}
+      <section className="py-20 bg-background">
+        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <SectionLabel icono="timeline">Línea de Tiempo</SectionLabel>
+            <h2 className="mt-3 font-headline-xl text-on-surface">
+              Hitos de nuestra <span className="text-primary">trayectoria</span>
+            </h2>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-6">
+            {trayectoria.map((h, i) => (
+              <div key={i} className="flex gap-6 items-start">
+                <span className="shrink-0 font-extrabold text-primary text-xl w-16 pt-1 font-mono">
+                  {h.anio}
+                </span>
+                <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-5 flex-1">
+                  <p className="text-body-md text-on-surface">{h.evento}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

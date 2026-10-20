@@ -1,116 +1,73 @@
 /**
- * projectAdapter.ts
- * Convierte FirestoreProject (estructura real de Firestore/Flutter)
- * al formato IProject que usan los componentes de la web.
- *
- * Centraliza el mapeo para que si cambia el esquema de Firestore
- * solo se actualice aquí, sin tocar los componentes UI.
+ * src/lib/firebase/projectAdapter.ts
+ * Transforma documentos FirestoreProject (shape crudo Flutter) al formato
+ * unificado IProject de la UI.
+ * Espejo del patrón en semta/test/models/project_test.dart
  */
 
 import type { FirestoreProject } from "./projectService";
 import type { IProject, ProjectEstado, ProjectTipo } from "@/types";
-import { normalizeImageUrl, FALLBACK_IMAGE } from "@/lib/images";
+import { FALLBACK_IMAGE, normalizeImageUrl } from "@/lib/images";
 
-// Mapeo de estados Firestore → estados UI
-const estadoMap: Record<string, ProjectEstado> = {
-  PLANIFICADO: "Planificado",
-  EN_EJECUCION: "En Ejecución",
+const ESTADO_MAP: Record<string, ProjectEstado> = {
   CONCLUIDO: "Concluido",
+  EN_EJECUCION: "En Ejecución",
+  PLANIFICADO: "Planificado",
   SUSPENDIDO: "Suspendido",
   CANCELADO: "Cancelado",
-  // Por si vienen en formato legible directamente
-  Planificado: "Planificado",
-  "En Ejecución": "En Ejecución",
-  Concluido: "Concluido",
-  Suspendido: "Suspendido",
-  Cancelado: "Cancelado",
 };
 
-// Mapeo de tipos Firestore → tipos UI
-const tipoMap: Record<string, ProjectTipo> = {
+const TIPO_MAP: Record<string, ProjectTipo> = {
   "agua-y-riego": "Agua y Riego",
   agroecologia: "Agroecología",
   bofedales: "Manejo de Bofedales",
   mujeres: "Liderazgo de Mujeres",
   tecnologias: "Tecnologías Solares",
-  // Por si el ID coincide con el nombre del tipo directamente
-  "Agua y Riego": "Agua y Riego",
-  Agroecología: "Agroecología",
-  "Manejo de Bofedales": "Manejo de Bofedales",
-  "Liderazgo de Mujeres": "Liderazgo de Mujeres",
-  "Tecnologías Solares": "Tecnologías Solares",
 };
 
-/**
- * Convierte un proyecto de Firestore al formato IProject de la UI.
- *
- * @param fp - Proyecto tal como viene de Firestore
- * @param municipiosMap - mapa { municipioId: nombre } para resolver nombres
- * @param financiadoresMap - mapa { financiadorId: nombre }
- * @param tiposMap - mapa { tipoProyectoId: nombre }
- */
 export function adaptProject(
   fp: FirestoreProject,
   municipiosMap: Record<string, string> = {},
   financiadoresMap: Record<string, string> = {},
   tiposMap: Record<string, string> = {},
 ): IProject {
-  // Resolver nombre del municipio principal
-  const municipioNombre =
-    fp.municipioIds.length > 0
-      ? (municipiosMap[fp.municipioIds[0]] ?? fp.municipioIds[0])
-      : "Bolivia";
-
-  // Resolver nombre del financiador
-  const financiadorNombre = financiadoresMap[fp.financiadorId] ?? fp.financiadorId ?? "";
-
-  // Resolver nombre del tipo
-  const tipoNombre = tiposMap[fp.tipoProyectoId] ?? fp.tipoProyectoId ?? "";
-
-  // Mapear estado
-  const estado: ProjectEstado = estadoMap[fp.estado] ?? "Planificado";
-
-  // Mapear tipo — buscar en el mapa o intentar match directo
-  const tipo: ProjectTipo = tipoMap[fp.tipoProyectoId] ?? tipoMap[tipoNombre] ?? "Agua y Riego";
-
-  // Imagen: normalizar links de Drive → imagen directa, o placeholder SEMTA
-  const imagen = fp.imageUrls?.length > 0 ? normalizeImageUrl(fp.imageUrls[0]) : FALLBACK_IMAGE;
-
-  // Texto de búsqueda combinado para el filtro client-side
-  const search = [
-    fp.nombre,
-    fp.descripcion,
-    fp.objetivo,
-    municipioNombre,
-    financiadorNombre,
-    tipoNombre,
-    fp.proyectoId,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+  const munName =
+    (fp.municipioIds ?? [])
+      .map((id) => municipiosMap[id] ?? id)
+      .filter(Boolean)
+      .join(", ") || "Bolivia";
+  const finName =
+    (fp.financiadorId ? (financiadoresMap[fp.financiadorId] ?? fp.financiadorId) : "") ||
+    "Cooperación Internacional";
+  const tipoName =
+    (fp.tipoProyectoId
+      ? (tiposMap[fp.tipoProyectoId] ?? TIPO_MAP[fp.tipoProyectoId])
+      : undefined) ?? "Agua y Riego";
+  const estadoUi: ProjectEstado = (fp.estado ? ESTADO_MAP[fp.estado] : undefined) ?? "Planificado";
+  const imagen =
+    fp.imageUrls && fp.imageUrls.length > 0 ? normalizeImageUrl(fp.imageUrls[0]) : FALLBACK_IMAGE;
 
   return {
-    id: fp.proyectoId,
-    titulo: fp.nombre,
-    descripcion: fp.descripcion || fp.objetivo,
-    estado,
-    tipo,
-    municipio: municipioNombre,
-    financiador: financiadorNombre,
-    cooperante: financiadorNombre,
-    beneficiarios: fp.beneficiarios || "Familias beneficiadas",
-    gestion: String(fp.anio),
-    ubicacion: municipioNombre + ", Bolivia",
+    id: fp.proyectoId || fp._docId || "",
+    titulo: fp.nombre || "Proyecto SEMTA",
+    descripcion: fp.descripcion || "",
+    estado: estadoUi,
+    tipo: tipoName as ProjectTipo,
+    municipio: munName,
+    financiador: finName,
+    cooperante: finName,
+    beneficiarios: fp.beneficiarios || "Comunidades participantes",
+    gestion: String(fp.anio ?? ""),
+    ubicacion: munName === "Bolivia" ? "Bolivia" : `${munName}, Bolivia`,
     imagen,
-    alt: `Proyecto SEMTA: ${fp.nombre} en ${municipioNombre}`,
-    codigo: `ID: ${fp.proyectoId}`,
+    alt: fp.nombre ? `Proyecto SEMTA: ${fp.nombre}` : "Proyecto SEMTA",
+    codigo: fp.proyectoId ? `ID: ${fp.proyectoId}` : "",
     boton: "Ficha Técnica",
-    search,
+    search:
+      `${fp.proyectoId ?? ""} ${fp.nombre ?? ""} ${fp.descripcion ?? ""} ${munName} ${finName} ${tipoName} ${estadoUi}`.toLowerCase(),
   };
 }
 
-/** Adapta un array completo de proyectos Firestore */
 export function adaptProjects(
   fps: FirestoreProject[],
   municipiosMap: Record<string, string> = {},

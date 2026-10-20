@@ -15,13 +15,13 @@ interface Props {
 }
 
 export default function ThemeToggle({ className }: Props) {
-  const { resolvedTheme, toggle } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={toggleTheme}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       title={isDark ? "Modo claro" : "Modo oscuro"}
       className={cn(

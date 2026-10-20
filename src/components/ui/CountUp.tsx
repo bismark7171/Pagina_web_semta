@@ -1,41 +1,56 @@
 "use client";
 
-import { animate, useInView } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useCountAnimation } from "@/hooks/useCountAnimation";
 
-function parseNumber(v: string): { prefix: string; num: number; suffix: string } {
-  const m = v.match(/^([^0-9]*)([0-9.,]+)(.*)$/);
-  if (!m) return { prefix: "", num: 0, suffix: v };
-  return {
-    prefix: m[1],
-    num: parseFloat(m[2].replace(/\./g, "").replace(",", ".")),
-    suffix: m[3],
-  };
+export interface CountUpProps {
+  value: string | number;
+  duration?: number;
+  className?: string;
 }
 
-export function CountUp({ value, duration = 1.6 }: { value: string; duration?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [display, setDisplay] = useState(value);
+export function CountUp({ value, duration = 1.6, className = "" }: CountUpProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (!inView || !ref.current) return;
-    const { prefix, num, suffix } = parseNumber(value);
-    if (!num) return;
+    if (!window.IntersectionObserver) {
+      setIsVisible(true);
+      return;
+    }
 
-    const controls = animate(0, num, {
-      duration,
-      ease: "easeOut",
-      onUpdate: (latest) => {
-        const hasDecimals = value.includes(",");
-        const formatted = hasDecimals
-          ? latest.toFixed(1).replace(".", ",")
-          : Math.round(latest).toLocaleString("es-BO");
-        setDisplay(`${prefix}${formatted}${suffix}`);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
       },
-    });
-    return () => controls.stop();
-  }, [inView, value, duration]);
+      { threshold: 0.05, rootMargin: "50px" },
+    );
 
-  return <span ref={ref}>{display}</span>;
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+      const rect = elementRef.current.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const displayValue = useCountAnimation(value, {
+    duration,
+    enabled: isVisible,
+  });
+
+  return (
+    <span ref={elementRef} className={className}>
+      {displayValue}
+    </span>
+  );
 }
+
+export default CountUp;

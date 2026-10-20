@@ -1,63 +1,50 @@
-/**
- * EstadoBar.tsx
- * Barra visual de distribución de proyectos por estado.
- * Server Component puro — sin JS cliente, puro CSS.
- */
+"use client";
 
-import { proyectoEstados } from "@/data/projects";
-import type { ProjectEstado } from "@/types";
+import React from "react";
 
 interface Props {
   distribucion: Record<string, number>;
   total: number;
 }
 
-export default function EstadoBar({ distribucion, total }: Props) {
-  if (total === 0) return null;
+const ESTADOS_CONFIG: Record<string, { color: string; label: string }> = {
+  "En Ejecución": { color: "bg-secondary", label: "En Ejecución" },
+  Concluido: { color: "bg-primary", label: "Concluido" },
+  Planificado: { color: "bg-tertiary", label: "Planificado" },
+};
 
-  // Orden fijo de estados para la barra
-  const orden: ProjectEstado[] = [
-    "En Ejecución",
-    "Planificado",
-    "Concluido",
-    "Suspendido",
-    "Cancelado",
-  ];
+export default function EstadoBar({ distribucion, total }: Props) {
+  if (total <= 0) return null;
 
   return (
     <div className="space-y-4">
-      {/* Barra apilada */}
+      {/* Barra continua proporcional */}
       <div className="flex h-4 w-full overflow-hidden rounded-full bg-surface-container">
-        {orden.map((estado) => {
-          const count = distribucion[estado] ?? 0;
-          if (count === 0) return null;
-          const pct = ((count / total) * 100).toFixed(1);
-          const cfg = proyectoEstados[estado];
+        {Object.entries(distribucion).map(([estado, count]) => {
+          const pct = Math.round((count / total) * 100);
+          const config = ESTADOS_CONFIG[estado] || { color: "bg-outline", label: estado };
           return (
             <div
               key={estado}
-              style={{ width: `${pct}%`, backgroundColor: cfg.color }}
-              title={`${estado}: ${count} (${pct}%)`}
+              style={{ width: `${pct}%` }}
+              title={`${config.label}: ${count} (${pct}%)`}
+              className={`${config.color} transition-all duration-500`}
             />
           );
         })}
       </div>
 
-      {/* Leyenda */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2">
-        {orden.map((estado) => {
-          const count = distribucion[estado] ?? 0;
-          if (count === 0) return null;
-          const cfg = proyectoEstados[estado];
-          const pct = ((count / total) * 100).toFixed(0);
+      {/* Leyenda con valores y porcentajes */}
+      <div className="flex flex-wrap gap-4 pt-2">
+        {Object.entries(distribucion).map(([estado, count]) => {
+          const pct = Math.round((count / total) * 100);
+          const config = ESTADOS_CONFIG[estado] || { color: "bg-outline", label: estado };
           return (
-            <div key={estado} className="flex items-center gap-2">
-              <span className="size-3 rounded-full" style={{ backgroundColor: cfg.color }} />
-              <span className="text-body-sm text-on-surface-variant">
-                {cfg.label}{" "}
-                <span className="font-semibold text-on-surface">
-                  {count} ({pct}%)
-                </span>
+            <div key={estado} className="flex items-center gap-2 text-body-xs">
+              <span className={`size-3 rounded-full ${config.color}`} />
+              <span className="font-semibold text-on-surface">{config.label}:</span>
+              <span className="text-on-surface-variant">
+                {count} ({pct}%)
               </span>
             </div>
           );

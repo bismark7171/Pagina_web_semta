@@ -14,7 +14,25 @@
 import dynamic from "next/dynamic";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { projects } from "@/data/projects";
 import type { MunicipioMapa } from "./MapaBoliviaInner";
+
+const defaultMunicipios: MunicipioMapa[] = (() => {
+  const counts: Record<string, { count: number; nombre: string }> = {};
+  for (const p of projects) {
+    if (!p.municipio) continue;
+    const key = p.municipio.toLowerCase().trim();
+    if (!counts[key]) {
+      counts[key] = { count: 0, nombre: p.municipio };
+    }
+    counts[key].count += 1;
+  }
+  return Object.entries(counts).map(([id, data]) => ({
+    id,
+    nombre: data.nombre,
+    cantidadProyectos: data.count,
+  }));
+})();
 
 // Carga diferida — no afecta el LCP de la página principal
 const MapaBoliviaInner = dynamic(() => import("./MapaBoliviaInner"), {
@@ -31,11 +49,11 @@ const MapaBoliviaInner = dynamic(() => import("./MapaBoliviaInner"), {
 });
 
 interface Props {
-  municipios: MunicipioMapa[];
+  municipios?: MunicipioMapa[];
   className?: string;
 }
 
-export default function MapaBolivia({ municipios, className }: Props) {
+export default function MapaBolivia({ municipios = defaultMunicipios, className }: Props) {
   return (
     <section className={className}>
       <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
@@ -61,7 +79,9 @@ export default function MapaBolivia({ municipios, className }: Props) {
           </div>
 
           {/* Mapa */}
-          <MapaBoliviaInner municipios={municipios} />
+          <div className="relative min-h-[420px] w-full overflow-hidden rounded-2xl">
+            <MapaBoliviaInner municipios={municipios} />
+          </div>
 
           {/* Nota mobile */}
           <p className="mt-3 text-label-md text-on-surface-variant/60 sm:hidden">

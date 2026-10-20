@@ -3,6 +3,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { CountUp } from "@/components/ui/CountUp";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export default function ImpactMetrics({
   totalProyectos,
@@ -42,32 +43,38 @@ export default function ImpactMetrics({
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {metrics.map((m, i) => (
             <FadeIn key={m.titulo} delay={i * 0.12}>
-              <article className="group h-full rounded-3xl border border-outline-variant bg-surface-container-lowest p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
-                <div className="flex items-center justify-between">
-                  <span className="grid size-14 place-items-center rounded-2xl bg-primary-container/15 text-primary transition-colors duration-300 group-hover:bg-primary-container group-hover:text-on-primary-container">
-                    <MaterialIcon name={m.icono} className="text-[28px]" />
-                  </span>
-                  <span className="text-4xl font-extrabold tracking-tight text-primary opacity-10 transition-opacity duration-300 group-hover:opacity-30">
-                    +
-                  </span>
-                </div>
+              <TiltCard maxDeg={3} className="h-full rounded-3xl">
+                <article className="group h-full rounded-3xl border border-outline-variant bg-surface-container-lowest p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta">
+                  <div className="flex items-center justify-between">
+                    <span className="relative grid size-14 place-items-center rounded-2xl bg-primary-container/15 text-primary transition-all duration-300 group-hover:bg-primary-container group-hover:text-on-primary-container group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                      <span className="absolute inset-0 rounded-2xl bg-primary/10 animate-ping opacity-20 pointer-events-none" />
+                      <MaterialIcon
+                        name={m.icono}
+                        className="text-[28px] transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </span>
+                    <span className="text-4xl font-extrabold tracking-tight text-primary opacity-10 transition-opacity duration-300 group-hover:opacity-30">
+                      +
+                    </span>
+                  </div>
 
-                <p className="mt-8 font-display-lg text-5xl font-extrabold tracking-tight text-bosque">
-                  <CountUp value={m.valor} />
-                </p>
-                <h3 className="mt-2 font-headline-md text-on-surface">{m.titulo}</h3>
-                <p className="mt-2 text-body-md leading-relaxed text-on-surface-variant">
-                  {m.descripcion}
-                </p>
+                  <p className="mt-8 font-display-lg text-5xl font-extrabold tracking-tight text-bosque">
+                    <CountUp value={m.valor} />
+                  </p>
+                  <h3 className="mt-2 font-headline-md text-on-surface">{m.titulo}</h3>
+                  <p className="mt-2 text-body-md leading-relaxed text-on-surface-variant">
+                    {m.descripcion}
+                  </p>
 
-                <div className="mt-6 flex items-center gap-2 border-t border-outline-variant pt-4 text-label-md font-semibold text-primary">
-                  <MaterialIcon
-                    name="trending_up"
-                    className="text-[1.1em] transition-transform duration-300 group-hover:translate-x-0.5"
-                  />
-                  {m.footer}
-                </div>
-              </article>
+                  <div className="mt-6 flex items-center gap-2 border-t border-outline-variant pt-4 text-label-md font-semibold text-primary">
+                    <MaterialIcon
+                      name="trending_up"
+                      className="text-[1.1em] transition-transform duration-300 group-hover:translate-x-0.5"
+                    />
+                    {m.footer}
+                  </div>
+                </article>
+              </TiltCard>
             </FadeIn>
           ))}
         </div>

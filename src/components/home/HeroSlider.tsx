@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { heroSlides } from "@/data/heroSlides";
 import { Button } from "@/components/ui/Button";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { useImageViewer } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 const DURATION = 6000;
@@ -28,6 +29,18 @@ const itemVariants = {
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const { openViewer } = useImageViewer();
+
+  const handleOpenViewer = () => {
+    openViewer({
+      fotos: heroSlides.map((s) => ({
+        imagen: s.imagen,
+        alt: s.alt,
+        caption: `${s.chip}: ${s.titulo}`,
+      })),
+      indiceInicial: current,
+    });
+  };
 
   useEffect(() => {
     if (paused) return;
@@ -39,7 +52,8 @@ export default function HeroSlider() {
 
   return (
     <section
-      className="relative min-h-[92vh] overflow-hidden bg-bosque"
+      className="relative min-h-[92vh] h-[92vh] overflow-hidden bg-bosque"
+      style={{ position: "relative" }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -47,7 +61,16 @@ export default function HeroSlider() {
       <AnimatePresence initial={false} mode="sync">
         <motion.div
           key={current}
-          className="absolute inset-0"
+          className="absolute inset-0 h-full w-full overflow-hidden"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
           initial={{ opacity: 0, scale: 1.08 }}
           animate={{ opacity: 1, scale: 1.03 }} // zoom lento continuo
           exit={{ opacity: 0, scale: 1 }}
@@ -56,29 +79,35 @@ export default function HeroSlider() {
             scale: { duration: DURATION / 1000 + 1, ease: "linear" },
           }}
         >
-          <Image
-            src={slide.imagen}
-            alt={slide.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/15" />
-          <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-bosque/90 to-transparent" />
+          <div
+            className="relative h-full w-full"
+            style={{ position: "relative", width: "100%", height: "100%" }}
+          >
+            <Image
+              src={slide.imagen}
+              alt={slide.alt}
+              fill
+              priority={current === 0}
+              fetchPriority={current === 0 ? "high" : "auto"}
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/15" />
+            <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-bosque/90 to-transparent" />
+          </div>
         </motion.div>
       </AnimatePresence>
 
       {/* ── Contenido ────────────────────────────────────────────────────── */}
       <div className="relative z-10 flex min-h-[92vh] flex-col justify-end">
         <div className="mx-auto w-full max-w-container-semta px-gutter-desktop pb-14 pt-36">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {/* Reveal escalonado: chip → título → descripción → botones */}
             <motion.div
               key={current}
               className="max-w-3xl"
               variants={containerVariants}
-              initial="hidden"
+              initial={false}
               animate="show"
               exit="exit"
             >
@@ -144,11 +173,11 @@ export default function HeroSlider() {
                   {i === current && (
                     <motion.span
                       key={`${current}-${paused ? "p" : "r"}`}
-                      className="absolute inset-0 origin-left rounded-full bg-primary-fixed"
+                      className="absolute inset-0 origin-left rounded-full bg-primary"
                       initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
+                      animate={{ scaleX: paused ? 0.5 : 1 }}
                       transition={{
-                        duration: paused ? DURATION / 1000 : 0,
+                        duration: paused ? 0 : DURATION / 1000,
                         ease: "linear",
                       }}
                     />
@@ -168,9 +197,7 @@ export default function HeroSlider() {
                     aria-label={`Ir al slide ${i + 1}`}
                     className={cn(
                       "size-2.5 rounded-full transition-all",
-                      i === current
-                        ? "scale-125 bg-primary-fixed"
-                        : "bg-white/40 hover:bg-white/70",
+                      i === current ? "scale-125 bg-primary" : "bg-white/40 hover:bg-white/70",
                     )}
                   />
                 ))}
@@ -195,11 +222,11 @@ export default function HeroSlider() {
       </div>
 
       {/* ── Caption flotante — desktop ───────────────────────────────────── */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={current}
           className="absolute bottom-24 right-8 z-10 hidden max-w-xs rounded-2xl border border-white/15 bg-white/10 p-5 text-white backdrop-blur-md lg:block"
-          initial={{ opacity: 0, y: 16 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.35, delay: 0.2 }}
@@ -213,6 +240,15 @@ export default function HeroSlider() {
                 {slide.captionTitulo}
               </p>
               <p className="mt-1 text-body-md font-medium leading-snug">{slide.captionTexto}</p>
+              <button
+                type="button"
+                onClick={handleOpenViewer}
+                aria-label="Ampliar fotografía con zoom y recorte"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-label-xs font-semibold text-white/90 transition-colors hover:bg-white/25"
+              >
+                <MaterialIcon name="zoom_in" className="text-[16px] text-primary-fixed" />
+                <span>Ampliar imagen</span>
+              </button>
             </div>
           </div>
         </motion.div>

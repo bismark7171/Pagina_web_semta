@@ -1,35 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 300);
-    onScroll();
+    const onScroll = () => {
+      setVisible(window.scrollY > 400);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (!visible) return null;
+
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.button
-          type="button"
-          aria-label="Volver arriba"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          initial={{ opacity: 0, scale: 0.8, y: 16 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 16 }}
-          transition={{ duration: 0.2 }}
-          className="fixed bottom-6 left-6 z-50 grid size-12 place-items-center rounded-full bg-secondary text-on-secondary shadow-card-semta transition-colors hover:bg-secondary-container"
-        >
-          <MaterialIcon name="arrow_upward" className="text-[22px]" />
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <button
+      type="button"
+      onClick={scrollToTop}
+      aria-label="Volver al inicio de la página"
+      className="fixed bottom-6 left-6 z-30 grid size-11 place-items-center rounded-full border border-outline-variant bg-surface/90 text-on-surface shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-primary hover:text-on-primary focus-visible:ring-2 focus-visible:ring-primary"
+    >
+      <MaterialIcon name="arrow_upward" className="text-[20px]" />
+    </button>
   );
 }
+
+export default BackToTop;

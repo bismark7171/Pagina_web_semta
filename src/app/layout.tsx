@@ -1,27 +1,14 @@
-import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
-import { Toaster } from "sonner";
-
+import type { Metadata } from "next";
+import "./globals.css";
+import { siteDetails } from "@/data/siteDetails";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import BackToTop from "@/components/layout/BackToTop";
 import FloatingChat from "@/components/layout/FloatingChat";
-import { BackToTop } from "@/components/layout/BackToTop";
+import SplashScreen from "@/components/layout/SplashScreen";
 import { ThemeProvider, ThemeScript } from "@/components/layout/ThemeProvider";
-import { siteDetails } from "@/data/siteDetails";
-
-import "./globals.css";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-});
+import { ImageViewerProvider } from "@/components/ui/ImageViewerContext";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteDetails.siteUrl),
@@ -37,77 +24,40 @@ export const metadata: Metadata = {
     siteName: siteDetails.siteName,
     locale: "es_BO",
     type: "website",
-    images: [
-      {
-        url: "/images/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: siteDetails.siteName,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteDetails.metadata.title,
     description: siteDetails.metadata.description,
-    images: ["/images/twitter-image.jpg"],
   },
-  other: {},
-};
-
-export const viewport: Viewport = {
-  themeColor: "#0d631b",
-  colorScheme: "light",
-};
-
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "NGO",
-  name: siteDetails.siteName,
-  alternateName: "Servicios Múltiples de Tecnologías Apropiadas",
-  url: siteDetails.siteUrl,
-  foundingDate: "1982",
-  email: siteDetails.contacto.email,
-  telephone: siteDetails.contacto.telefono,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: siteDetails.contacto.direccion,
-    addressLocality: "La Paz",
-    addressCountry: "BO",
+  robots: {
+    index: true,
+    follow: true,
   },
-  areaServed: { "@type": "Country", name: "Bolivia" },
-  sameAs: siteDetails.redes.map((r) => r.url),
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html lang="es" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Script inline anti-flash: aplica clase 'dark' ANTES de renderizar */}
         <ThemeScript />
       </head>
-      <body className="antialiased">
+      <body
+        className="flex min-h-screen flex-col bg-surface text-on-surface antialiased transition-colors duration-200"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-label-lg focus:font-semibold focus:text-on-primary"
-          >
-            Saltar al contenido principal
-          </a>
-          <Header />
-          <main id="main-content">{children}</main>
-          <Footer />
-          <FloatingChat />
-          <BackToTop />
-          <Toaster position="bottom-right" richColors toastOptions={{ className: "font-body" }} />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-          />
+          <SplashScreen />
+          <ImageViewerProvider>
+            <Header />
+            <main id="main-content" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <BackToTop />
+            <FloatingChat />
+            <Toaster position="top-right" richColors />
+          </ImageViewerProvider>
         </ThemeProvider>
       </body>
     </html>

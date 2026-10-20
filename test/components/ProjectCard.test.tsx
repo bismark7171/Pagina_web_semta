@@ -6,7 +6,7 @@
  * Espejo de semta/test/widgets/project_card_test.dart
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import ProjectCard from "@/components/projects/ProjectCard";
 import type { IProject } from "@/types";

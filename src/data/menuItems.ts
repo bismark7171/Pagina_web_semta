@@ -7,14 +7,10 @@ export const menuItems: INavItem[] = [
     label: "Líneas de Acción",
     href: "/#lineas-de-accion",
     children: [
-      { label: "Agua y Suelo", href: "/#agua-y-suelo" },
+      { label: "Seguridad Hídrica", href: "/#agua-riego" },
       { label: "Agroecología", href: "/#agroecologia" },
-      { label: "Forraje y Ganadería", href: "/#forraje-y-ganaderia" },
-      { label: "Mujeres y Comunidad", href: "/#mujeres-y-comunidad" },
-      {
-        label: "Tecnologías Apropiadas",
-        href: "/#tecnologias-apropiadas",
-      },
+      { label: "Tecnologías Solares", href: "/#energias-renovables" },
+      { label: "Gobernanza de Mujeres", href: "/#liderazgo-mujeres" },
     ],
   },
   { label: "Casa SEMTA", href: "/casa-semta" },
@@ -24,6 +20,7 @@ export const menuItems: INavItem[] = [
     href: "/cursos",
     children: [
       { label: "Cursos y Certificaciones", href: "/cursos" },
+      { label: "Verificar Certificado", href: "/verificar-certificado" },
       { label: "Pasantías 340h", href: "/pasantias" },
     ],
   },
@@ -39,8 +36,8 @@ export const menuItems: INavItem[] = [
     label: "Nosotros",
     href: "/nosotros",
     children: [
-      { label: "Nosotros", href: "/nosotros" },
-      { label: "Transparencia", href: "/transparencia" },
+      { label: "Historia y Equipo", href: "/nosotros" },
+      { label: "Transparencia y Finanzas", href: "/transparencia" },
     ],
   },
 ];

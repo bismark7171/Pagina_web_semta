@@ -81,12 +81,31 @@ function fromAdminDoc(doc: any): FirestoreLibro {
  */
 export async function adminGetLibrosPublicos(): Promise<FirestoreLibro[]> {
   const db = getAdminDb();
-  const snap = await db
-    .collection(COL)
-    .where("esPublico", "==", true)
-    .orderBy("fechaCreacion", "desc")
-    .get();
-  return snap.docs.map(fromAdminDoc);
+  let snap;
+  try {
+    snap = await db
+      .collection(COL)
+      .where("esPublico", "==", true)
+      .orderBy("fechaCreacion", "desc")
+      .get();
+  } catch (err) {
+    // Si falta el índice compuesto en Firestore (esPublico + fechaCreacion),
+    // consultar sin orderBy y ordenar en memoria para que nunca falle
+    console.warn("[adminBibliotecaService] Fallback a consulta simple sin orderBy:", err);
+    snap = await db.collection(COL).where("esPublico", "==", true).get();
+  }
+
+  // Si no encuentra libros con esPublico == true (por ejemplo documentos sin ese campo explícito),
+  // traer toda la colección como respaldo
+  if (snap.empty) {
+    snap = await db.collection(COL).get();
+  }
+
+  const libros = snap.docs.map(fromAdminDoc);
+  // Ordenar por fechaCreacion descendente en memoria
+  return libros.sort(
+    (a, b) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime(),
+  );
 }
 
 /**

@@ -1,30 +1,76 @@
+/**
+ * src/data/pasantias.ts
+ * Información de la convocatoria de pasantías técnicas y universitarias de 340 horas.
+ */
+
 export const pasantiasData = {
-  titulo: "Pasantías Profesionales de 340 Horas",
-  duracion: "4 meses",
-  modalidad: "Campo + sede",
-  regiones: ["Altiplano de La Paz", "Valles de Cochabamba", "Sede La Paz"],
+  duracion: "340 horas académicas",
+  modalidad: "Campo y Gabinete",
+  regiones: ["Altiplano Norte", "Altiplano Central", "Valles Interandinos"],
   areas: [
-    { icono: "agriculture", label: "Agronomía y Sistemas de Riego", descripcion: "Diseño y supervisión de microriego, cosecha de agua y manejo de cuencas." },
-    { icono: "eco", label: "Agroecología y Bioinsumos", descripcion: "Biofábricas, bancos de semillas nativas y huertos biointensivos." },
-    { icono: "pets", label: "Manejo de Bofedales y Ganadería", descripcion: "Pastoreo regenerativo, forraje verde hidropónico y sanidad de camélidos." },
-    { icono: "solar_power", label: "Tecnologías Solares", descripcion: "Secadores solares, cocinas eficientes y bombeo fotovoltaico." },
-    { icono: "groups", label: "Gestión Social Comunitaria", descripcion: "Fortalecimiento organizativo, enfoque de género y sistematización participativa." },
+    {
+      icono: "water_drop",
+      label: "Gestión Integral del Agua y Riego",
+      descripcion:
+        "Levantamiento topográfico, dimensionamiento de atajados, monitoreo de calidad de agua y aforos de vertientes.",
+    },
+    {
+      icono: "grass",
+      label: "Agroecología y Suelos Vivos",
+      descripcion:
+        "Ensayos de bioinsumos, muestreo de microbiología de suelos, manejo integrado de plagas y bancos de semillas.",
+    },
+    {
+      icono: "solar_power",
+      label: "Energías Renovables y Tecnologías Apropiadas",
+      descripcion:
+        "Diseño e instalación de bombas solares, secadores solares de alimentos y biodigestores comunitarios.",
+    },
+    {
+      icono: "diversity_3",
+      label: "Desarrollo Comunitario y Género",
+      descripcion:
+        "Facilitación de metodologías participativas, diagnóstico comunal y fortalecimiento de lideresas indígenas.",
+    },
   ],
   requisitos: [
-    "Estudiante o egresado de Agronomía, Ingeniería Ambiental, Ingeniería Agrícola, Sociología, Trabajo Social o carreras afines.",
-    "Disponibilidad para trabajo de campo en el Altiplano y Valles (4 meses).",
-    "Conocimientos básicos de herramientas digitales y apertura al trabajo intercultural.",
+    "Estudiantes de último año o egresados de Agronomía, Ing. Ambiental, Civil, Sociología o afines.",
+    "Compromiso ético con las comunidades campesinas y disposición para trabajo en campo en altura.",
+    "Carta de presentación institucional o académica emitida por la universidad o instituto técnico.",
+    "Conocimiento básico de aymara o quechua es altamente valorado.",
   ],
   beneficios: [
-    "Certificación SEMTA con código QR institucional verificable.",
-    "Cobertura de viáticos de campo y transporte interprovincial.",
-    "Tutoría técnica y acompañamiento pedagógico para tesis o proyectos de grado.",
-    "Red de contactos: cooperación internacional, gobiernos locales y organizaciones campesinas.",
+    "Certificado oficial de 340 horas avalado con código QR para convalidación académica universitaria.",
+    "Cobertura de viáticos de traslado a campo, alimentación y hospedaje en campamentos comunitarios.",
+    "Tutoría personalizada por ingenieros y especialistas con más de 15 años de trayectoria.",
+    "Posibilidad de inserción en bolsa de trabajo y proyectos contratados de la institución.",
   ],
   pasos: [
-    { numero: "01", titulo: "Postula", descripcion: "Completa el formulario en línea con tu CV y una carta de motivación." },
-    { numero: "02", titulo: "Entrevista", descripcion: "Conversaremos sobre tus intereses y asignamos área y territorio." },
-    { numero: "03", titulo: "Inducción", descripcion: "Taller inicial de contexto institucional y metodologías participativas." },
-    { numero: "04", titulo: "Campo + informe", descripcion: "4 meses de práctica con tutoría y entrega de informe final de experencia." },
+    {
+      numero: "01",
+      titulo: "Postulación Online",
+      descripcion:
+        "Completa el formulario de postulación adjuntando tu hoja de vida y carta de tu casa de estudios.",
+    },
+    {
+      numero: "02",
+      titulo: "Entrevista Técnica",
+      descripcion:
+        "Conversatorio con el equipo técnico y asignación de línea temática según vocación e interés.",
+    },
+    {
+      numero: "03",
+      titulo: "Inducción y Salida a Campo",
+      descripcion:
+        "Capacitación en salvaguardas comunitarias, protocolos de seguridad y despliegue territorial.",
+    },
+    {
+      numero: "04",
+      titulo: "Informe y Certificación",
+      descripcion:
+        "Presentación del informe final de prácticas y emisión de certificado institucional de 340 horas con QR.",
+    },
   ],
 };
+
+export default pasantiasData;

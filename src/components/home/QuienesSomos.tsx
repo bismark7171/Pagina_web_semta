@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 import { Button } from "@/components/ui/Button";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { nosotrosData } from "@/data/nosotros";
@@ -13,15 +13,13 @@ export default function QuienesSomos() {
       <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <FadeIn>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
-              <Image
-                src={fotoComunidad.imagen}
-                alt={fotoComunidad.alt}
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </div>
+            <ZoomableImage
+              src={fotoComunidad.imagen}
+              alt={fotoComunidad.alt}
+              aspectRatioClass="aspect-[4/3]"
+              className="rounded-3xl shadow-md"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+            />
           </FadeIn>
 
           <FadeIn delay={0.12}>

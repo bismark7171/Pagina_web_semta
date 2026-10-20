@@ -1,19 +1,90 @@
-import type { IHeroSlide } from '@/types';
+/**
+ * src/data/heroSlides.ts
+ * Diapositivas destacadas para el slider principal de la página de inicio.
+ */
 
-export const heroSlides: IHeroSlide[] = [
+export interface HeroBoton {
+  text: string;
+  path: string;
+  icono?: string;
+}
+
+export interface HeroSlide {
+  imagen: string;
+  alt: string;
+  chip: string;
+  titulo: string;
+  descripcion: string;
+  captionIcono: string;
+  captionLabel: string;
+  captionTitulo: string;
+  captionTexto: string;
+  botones: HeroBoton[];
+  cta?: { label: string; href: string };
+  ctaSecundario?: { label: string; href: string };
+}
+
+export const heroSlides: HeroSlide[] = [
   {
-    chip: "Desarrollo Rural Sostenible Bolivia", titulo: "Sembramos soluciones donde el clima desafía la vida", descripcion: "40+ años fortaleciendo la resiliencia agroecológica comunitaria y la seguridad hídrica en el Altiplano y Valles de Bolivia.", imagen: "https://lh3.googleusercontent.com/aida-public/AB6AXuAQK5n6LW2ug_oRYK5IdsciuHh4IGzYPamNMQftWe2uDHCGiFRaenQy_906-80zMpEthY3DQqSKjB8qZNAIRbm9UkSd-jzV0DgyJHG3fJMgdZiJS_Ug4k6qxfpB_AvCh7ZtRNY0DaC4RpubslxGgmno6Lf569s6CH13a5VrOLJJ4sWS4ZkEnWIKCOkeYnM_hAZmUBnHB029RLPFhW6JMaQltvrrXFE4gw5uFbrL5XxTJkM2MBN9Nw", alt: "Campesinos quechuas y aymaras implementando zanjas de infiltración y reservorios de agua en el altiplano boliviano con montañas nevadas al fondo estilo fotografía documental de impacto social tonos tierra y verde intenso",
-    captionTitulo: "Cuenca Batallas, La Paz", captionTexto: "Cosecha de agua y microriego presurizado comunitario", captionIcono: "verified",
-    botones: [{ text: "Conoce Nuestros Proyectos", path: "/proyectos", icono: "arrow_forward" }, { text: "Biblioteca Digital", path: "/biblioteca", icono: "menu_book" }],
+    imagen:
+      "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=2000&q=85",
+    alt: "Comunidades andinas cosechando cultivos nativos en el altiplano boliviano",
+    chip: "Agroecología Andina",
+    titulo: "40+ años sembrando soberanía alimentaria y saberes comunitarios",
+    descripcion:
+      "Trabajamos junto a familias campesinas e indígenas en el Altiplano y Valles de Bolivia, impulsando tecnologías agroecológicas sostenibles y resilientes.",
+    captionIcono: "eco",
+    captionLabel: "Impacto Territorial",
+    captionTitulo: "Impacto Territorial",
+    captionTexto:
+      "Más de 35 municipios del Altiplano con sistemas de riego y semillas nativas protegidas.",
+    botones: [
+      { text: "Conoce nuestros proyectos", path: "/proyectos", icono: "arrow_forward" },
+      { text: "Biblioteca Digital", path: "/biblioteca", icono: "menu_book" },
+    ],
+    cta: { label: "Conoce nuestros proyectos", href: "/proyectos" },
+    ctaSecundario: { label: "Biblioteca Digital", href: "/biblioteca" },
   },
   {
-    chip: "Seguridad Hídrica y Soberanía", titulo: "Innovación y Soberanía Alimentaria en Comunidades Indígenas", descripcion: "Sistemas de riego tecnificado por aspersión, cosecha de agua y manejo agroforestal sustentable adaptado a pisos ecológicos.", imagen: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJ3syLwkQDFkrKBSmg43MypEfV5DuoJZTbv03Z0lhLOoroz75QLeAs2addRHQ8C0I23ElpfScItqSoIrdp5TrIoNHtPkts6osRJopZL-KSnePu3RBsTudarbRS0GL35ov9u5uAyBMX5BPLzVnyBbQM-fEt2naDNDMeNQTAlZfpj6lO4WpQ5y8p2NXyt5NRLBRoikoX89sdrhjCH25r1cqPXuawpDpP2isJFFyOvMxzRwgEbYE1uA", alt: "Mujer indígena agricultora examinando cultivos agroecológicos de quinua y hortalizas nativas bajo un sistema de aspersión rústico eficiente en los valles interandinos luz natural radiante",
-    captionTitulo: "Valles Interandinos", captionTexto: "Diversificación agronómica y biopreparados orgánicos", captionIcono: "eco",
-    botones: [{ text: "Ejes de Agua y Suelo", path: "/proyectos", icono: "water" }, { text: "Metodologías Agroecológicas", path: "/proyectos", icono: "" }],
+    imagen:
+      "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=2000&q=85",
+    alt: "Sistemas de captación de agua y riego tecnificado en zonas rurales",
+    chip: "Seguridad Hídrica",
+    titulo: "Cosecha de agua y tecnologías limpias para el cambio climático",
+    descripcion:
+      "Diseño e implementación de atajados familiares, riego por goteo y reservorios comunitarios para garantizar agua en épocas de sequía severa.",
+    captionIcono: "water_drop",
+    captionLabel: "Infraestructura Comunitaria",
+    captionTitulo: "Infraestructura Comunitaria",
+    captionTexto:
+      "1.200+ sistemas de riego e invernaderos solares construidos de forma participativa.",
+    botones: [
+      { text: "Ver tecnologías", path: "/proyectos?tipo=agua", icono: "arrow_forward" },
+      { text: "Cursos y Formación", path: "/cursos", icono: "school" },
+    ],
+    cta: { label: "Ver tecnologías", href: "/proyectos?tipo=agua" },
+    ctaSecundario: { label: "Cursos y Formación", href: "/cursos" },
   },
   {
-    chip: "Espacio Demostrativo La Paz", titulo: "Centro Demostrativo y Casa Semta: Saberes que Transforman", descripcion: "Espacios de encuentro, bio-insumos, productos ecológicos campesinos y formación técnica de alto impacto institucional.", imagen: "https://lh3.googleusercontent.com/aida-public/AB6AXuAOh9znTrLIOcCZP0AabKlCQuH-Pqnbe5eCU3H3kMHclFVCUYxeRJ20hv40kQIXqV7829YsXLIJVhyz6HVvzHNb1o1aTuD4KZ-zEalWO0NNLqOEGzyLwby0SXWJ3Z-jTta5uEftGnsfn9xmRJhBwmhRogzlNZbPeYj9xZG_-X2gnrooeppYik9kA2VyUFryhFdMI2UDbYXM4Upf4-5hbxpJNQqg0WckKl9in6DfSMU_ahgDzv_rgA", alt: "Centro demostrativo agroecológico con invernaderos bio-solares paneles solares secadores ecológicos y plantas medicinales en Sopocachi La Paz Bolivia entorno verde ordenado",
-    captionTitulo: "Sopocachi, La Paz", captionTexto: "Laboratorio vivo de tecnologías apropiadas", captionIcono: "local_florist",
-    botones: [{ text: "Descubrir Casa SEMTA", path: "/casa-semta", icono: "storefront" }, { text: "Pasantías Técnicas 340h", path: "/pasantias", icono: "" }],
+    imagen:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2000&q=85",
+    alt: "Mujeres líderes comunitarias en talleres de formación agroecológica",
+    chip: "Equidad de Género",
+    titulo: "Mujeres campesinas liderando la gestión de recursos y microempresas",
+    descripcion:
+      "Fortalecimiento organizativo, empoderamiento económico y formación técnica de lideresas rurales para el desarrollo sostenible de sus comunidades.",
+    captionIcono: "groups",
+    captionLabel: "Liderazgo Rural",
+    captionTitulo: "Liderazgo Rural",
+    captionTexto:
+      "Más de 6.000 mujeres capacitadas en transformación de alimentos y gestión local.",
+    botones: [
+      { text: "Transparencia y Resultados", path: "/transparencia", icono: "arrow_forward" },
+      { text: "Nuestra Historia", path: "/nosotros", icono: "history" },
+    ],
+    cta: { label: "Transparencia y Resultados", href: "/transparencia" },
+    ctaSecundario: { label: "Nuestra Historia", href: "/nosotros" },
   },
 ];
+
+export default heroSlides;

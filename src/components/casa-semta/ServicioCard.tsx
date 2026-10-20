@@ -1,25 +1,25 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { IServicioCasa } from "@/types";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Card } from "@/components/ui/Card";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 
 export default function ServicioCard({ servicio }: { servicio: IServicioCasa }) {
   return (
     <Card hoverable className="group h-full -col -outline-variant">
-      <div className="relative aspect-[16/10] overflow-hidden bg-surface-container-high">
-        <Image
-          src={servicio.imagen}
-          alt={servicio.alt}
-          fill
-          sizes="(min-width:768px) 50vw, 100vw"
-          className="object-cover"
-        />
-        <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5 text-label-md font-semibold text-white backdrop-blur">
-          <MaterialIcon name={servicio.badgeIcono} className="text-[1.1em] text-primary-fixed" />
-          {servicio.badgeTexto}
-        </span>
-      </div>
+      <ZoomableImage
+        src={servicio.imagen}
+        alt={servicio.alt}
+        caption={servicio.titulo}
+        aspectRatioClass="aspect-[16/10]"
+        sizes="(min-width:768px) 50vw, 100vw"
+        badge={
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5 text-label-md font-semibold text-white backdrop-blur">
+            <MaterialIcon name={servicio.badgeIcono} className="text-[1.1em] text-primary-fixed" />
+            {servicio.badgeTexto}
+          </span>
+        }
+      />
 
       <div className="flex flex-1 flex-col p-6">
         <h3 className="font-headline-md leading-snug text-on-surface">{servicio.titulo}</h3>

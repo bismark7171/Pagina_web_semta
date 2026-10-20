@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { IProject } from "@/types";
 import { proyectoEstados } from "@/data/projects";
 import { Modal } from "@/components/ui/Modal";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { FALLBACK_IMAGE } from "@/lib/images";
+import { ZoomableImage } from "@/components/ui/ZoomableImage";
 
 export default function ProjectModal({
   project,
@@ -15,7 +15,9 @@ export default function ProjectModal({
   project: IProject | null;
   onClose: () => void;
 }) {
-  const estado = project ? proyectoEstados[project.estado] : null;
+  const estado = project
+    ? proyectoEstados[project.estado] || { color: "#0d631b", tint: "rgba(13, 99, 27, 0.14)" }
+    : null;
   const [imagen, setImagen] = useState(project?.imagen ?? FALLBACK_IMAGE);
 
   useEffect(() => {
@@ -31,23 +33,32 @@ export default function ProjectModal({
     >
       {project && (
         <div className="space-y-6">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-2xl">
-            <Image
-              src={imagen}
-              alt={project.alt}
-              fill
-              sizes="(min-width:768px) 42rem, 100vw"
-              className="object-cover"
-              onError={() => setImagen(FALLBACK_IMAGE)}
-            />
-            <span
-              className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label-md font-semibold"
-              style={{ backgroundColor: estado!.tint, color: estado!.color }}
-            >
-              <span className="size-1.5 rounded-full" style={{ backgroundColor: estado!.color }} />
-              {project.estado}
-            </span>
-          </div>
+          <ZoomableImage
+            src={imagen}
+            alt={project.alt}
+            caption={`${project.titulo} (${project.codigo})`}
+            aspectRatioClass="aspect-[16/9]"
+            className="rounded-2xl shadow-sm"
+            sizes="(min-width:768px) 42rem, 100vw"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (target.src !== FALLBACK_IMAGE) {
+                setImagen(FALLBACK_IMAGE);
+              }
+            }}
+            badge={
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label-md font-semibold backdrop-blur-sm"
+                style={{ backgroundColor: estado!.tint, color: estado!.color }}
+              >
+                <span
+                  className="size-1.5 rounded-full"
+                  style={{ backgroundColor: estado!.color }}
+                />
+                {project.estado}
+              </span>
+            }
+          />
 
           <p className="text-body-md leading-relaxed text-on-surface-variant">
             {project.descripcion}

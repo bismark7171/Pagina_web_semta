@@ -20,7 +20,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ContactoForm from "@/components/forms/ContactoForm";
 
@@ -150,31 +150,42 @@ describe("ContactoForm — envío exitoso", () => {
   it("después de enviar muestra '¡Gracias!'", async () => {
     render(<ContactoForm />);
     await llenarYEnviarFormulario();
-    expect(screen.getByText(/¡Gracias!/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/¡Gracias!/i)).toBeInTheDocument();
+    });
   });
 
   it("después de enviar muestra el texto de éxito por defecto", async () => {
     render(<ContactoForm />);
     await llenarYEnviarFormulario();
-    expect(screen.getByText(/Te responderemos a la brevedad/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Te responderemos a la brevedad/i)).toBeInTheDocument();
+    });
   });
 
   it("después de enviar el formulario desaparece", async () => {
     render(<ContactoForm />);
     await llenarYEnviarFormulario();
-    expect(screen.queryByRole("button", { name: /Enviar mensaje/i })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: /Enviar mensaje/i })).not.toBeInTheDocument();
+    });
   });
 
   it("después de enviar aparece botón 'Enviar otro mensaje'", async () => {
     render(<ContactoForm />);
     await llenarYEnviarFormulario();
-    expect(screen.getByRole("button", { name: /Enviar otro mensaje/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /Enviar otro mensaje/i })).toBeInTheDocument();
+    });
   });
 
   it("'Enviar otro mensaje' vuelve al formulario", async () => {
     const user = userEvent.setup();
     render(<ContactoForm />);
     await llenarYEnviarFormulario();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /Enviar otro mensaje/i })).toBeInTheDocument();
+    });
     await user.click(screen.getByRole("button", { name: /Enviar otro mensaje/i }));
     expect(screen.getByRole("button", { name: /Enviar mensaje/i })).toBeInTheDocument();
   });
@@ -194,7 +205,9 @@ describe("ContactoForm — props personalizadas", () => {
   it("muestra successText personalizado tras el envío", async () => {
     render(<ContactoForm successText="Tu reserva fue registrada." />);
     await llenarYEnviarFormulario();
-    expect(screen.getByText("Tu reserva fue registrada.")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Tu reserva fue registrada.")).toBeInTheDocument();
+    });
   });
 
   it("usa asuntoInicial como valor por defecto del select", () => {

@@ -1,30 +1,24 @@
-import { ElementType, HTMLAttributes, ReactNode } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 
-interface CardProps extends HTMLAttributes<HTMLElement> {
-  children: ReactNode;
-  as?: ElementType;
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverable?: boolean;
+  children: React.ReactNode;
 }
 
-export function Card({
-  children,
-  className,
-  as: Component = "article",
-  hoverable = false,
-  ...props
-}: CardProps) {
+export function Card({ hoverable = false, className, children, ...props }: CardProps) {
   return (
-    <Component
+    <div
       className={cn(
-        "flex flex-col overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest",
-        hoverable &&
-          "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta hover:border-primary/30",
+        "rounded-3xl border border-outline-variant bg-surface-container-lowest transition-all duration-300",
+        hoverable && "hover:-translate-y-1 hover:shadow-card-semta",
         className,
       )}
       {...props}
     >
       {children}
-    </Component>
+    </div>
   );
 }
+
+export default Card;

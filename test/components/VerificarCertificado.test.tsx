@@ -90,14 +90,14 @@ describe("VerificarCertificado — código VÁLIDO", () => {
   it("código válido muestra el código en pantalla", async () => {
     render(<VerificarCertificado />);
     await buscarCodigo("SEMTA-2026-0042");
-    // El componente muestra el código como "titular"
-    expect(screen.getByText("SEMTA-2026-0042")).toBeInTheDocument();
+    // El código se muestra tanto en los datos como en la credencial holográfica
+    expect(screen.getAllByText("SEMTA-2026-0042").length).toBeGreaterThanOrEqual(1);
   });
 
   it("código válido muestra el programa de formación", async () => {
     render(<VerificarCertificado />);
     await buscarCodigo("SEMTA-2026-0042");
-    expect(screen.getByText(/340 horas/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/340 horas/i).length).toBeGreaterThanOrEqual(1);
   });
 
   it("código válido muestra la emisión por Casa SEMTA", async () => {

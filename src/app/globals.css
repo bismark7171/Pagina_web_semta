@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -157,8 +159,29 @@ h6 {
   }
 }
 
+@keyframes float-leaf {
+  0% {
+    transform: translateY(-10vh) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) scale(1.2);
+    opacity: 0;
+  }
+}
+
 .animate-marquee {
   animation: marquee-scroll 36s linear infinite;
+}
+
+.animate-float-leaf {
+  animation: float-leaf linear forwards infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

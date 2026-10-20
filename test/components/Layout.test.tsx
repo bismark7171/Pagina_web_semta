@@ -74,12 +74,13 @@ describe("Footer", () => {
 
   it("muestra el logo SEMTA", () => {
     render(<Footer />);
-    expect(screen.getAllByText("SEMTA").length).toBeGreaterThan(0);
+    expect(screen.getByAltText("Logo SEMTA")).toBeInTheDocument();
+    expect(screen.getByText(/SEMTA - Servicios Múltiples/i)).toBeInTheDocument();
   });
 
   it("muestra el subheading", () => {
     render(<Footer />);
-    expect(screen.getByText(/Construimos resiliencia agroecológica/)).toBeInTheDocument();
+    expect(screen.getByText(/fortaleciendo la resiliencia agroecológica/)).toBeInTheDocument();
   });
 
   it("tiene enlace a privacidad", () => {
@@ -105,25 +106,25 @@ describe("FloatingChat", () => {
 
   it("muestra el botón flotante", () => {
     render(<FloatingChat />);
-    expect(screen.getByLabelText("Abrir contacto rápido")).toBeInTheDocument();
+    expect(screen.getByLabelText("Atención directa por WhatsApp")).toBeInTheDocument();
   });
 
   it("abre el panel al hacer click", () => {
     render(<FloatingChat />);
-    const btn = screen.getByLabelText("Abrir contacto rápido");
+    const btn = screen.getByLabelText("Atención directa por WhatsApp");
     fireEvent.click(btn);
-    expect(screen.getByText("SEMTA responde")).toBeInTheDocument();
-    expect(screen.getByText("WhatsApp directo")).toBeInTheDocument();
+    expect(screen.getByText("Atención SEMTA")).toBeInTheDocument();
+    expect(screen.getByText("Chatear por WhatsApp")).toBeInTheDocument();
   });
 
   it("cierra el panel con el botón de cerrar", async () => {
     render(<FloatingChat />);
-    fireEvent.click(screen.getByLabelText("Abrir contacto rápido"));
-    const btn = screen.getByLabelText("Cerrar panel de contacto");
+    fireEvent.click(screen.getByLabelText("Atención directa por WhatsApp"));
+    const btn = screen.getByLabelText("Cerrar chat");
     fireEvent.click(btn);
-    // El botón flotante vuelve a su estado "abrir" tras cerrar el panel.
+    // El panel desaparece tras cerrar.
     await waitFor(() => {
-      expect(screen.getByLabelText("Abrir contacto rápido")).toBeInTheDocument();
+      expect(screen.queryByText("Atención SEMTA")).not.toBeInTheDocument();
     });
   });
 });
@@ -131,13 +132,13 @@ describe("FloatingChat", () => {
 describe("BackToTop", () => {
   it("no aparece sin scroll", () => {
     render(<BackToTop />);
-    expect(screen.queryByLabelText("Volver arriba")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Volver al inicio de la página")).not.toBeInTheDocument();
   });
 
   it("aparece al hacer scroll", () => {
-    Object.defineProperty(window, "scrollY", { value: 400, configurable: true });
+    Object.defineProperty(window, "scrollY", { value: 500, configurable: true });
     render(<BackToTop />);
     fireEvent.scroll(window);
-    expect(screen.getByLabelText("Volver arriba")).toBeInTheDocument();
+    expect(screen.getByLabelText("Volver al inicio de la página")).toBeInTheDocument();
   });
 });

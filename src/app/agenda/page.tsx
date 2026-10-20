@@ -1,109 +1,114 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/PageHero";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
-import { agendaTalleres } from "@/data/agenda";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Agenda de Talleres",
+  title: "Agenda de Talleres y Actividades",
   description:
-    "Talleres presenciales y webinars de agroecología, cosecha de agua y bioconstrucción en Casa SEMTA.",
+    "Calendario de actividades comunitarias, talleres prácticos y eventos agroecológicos organizados por SEMTA.",
 };
 
-const estadoEstilo: Record<string, string> = {
-  Abierto: "bg-primary/10 text-primary",
-  "En curso": "bg-secondary-container/10 text-secondary",
-  Convocatoria: "bg-tertiary-container text-on-tertiary-container",
-};
-
-function fechaLarga(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number);
-  const meses = [
-    "enero", "febrero", "marzo", "abril", "mayo", "junio",
-    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
-  ];
-  return `${d} de ${meses[m - 1]} de ${y}`;
-}
+const ACTIVIDADES_AGENDA = [
+  {
+    fecha: "24 Mayo 2025",
+    hora: "09:00 - 14:00",
+    lugar: "Casa SEMTA, Sopocachi",
+    titulo: "Taller Práctico: Elaboración de Bioles y Caldos Minerales",
+    tipo: "Taller Presencial",
+    cupos: "25 cupos",
+    estado: "Inscripciones Abiertas",
+  },
+  {
+    fecha: "07 Junio 2025",
+    hora: "10:00 - 13:00",
+    lugar: "Batallas, Comunidad Huancané",
+    titulo: "Jornada de Campo: Siembra y Cosecha de Agua en Cuencas Altas",
+    tipo: "Día de Campo",
+    cupos: "40 cupos",
+    estado: "Próximamente",
+  },
+  {
+    fecha: "18 Junio 2025",
+    hora: "16:00 - 18:30",
+    lugar: "Auditorio Casa SEMTA / Zoom",
+    titulo: "Conversatorio: Soberanía Alimentaria y Crisis Climática en los Andes",
+    tipo: "Híbrido",
+    cupos: "Abierto",
+    estado: "Inscripciones Abiertas",
+  },
+  {
+    fecha: "05 Julio 2025",
+    hora: "09:00 - 17:00",
+    lugar: "Campus Luribay",
+    titulo: "Encuentro de Promotoras Agroecológicas y Manejo de Semillas Nativas",
+    tipo: "Encuentro Comunitario",
+    cupos: "Comunidades",
+    estado: "Convocatoria",
+  },
+];
 
 export default function AgendaPage() {
   return (
-    <>
-      <PageHero
-        crumbs={[{ label: "Inicio", href: "/" }, { label: "Agenda", href: "/agenda" }]}
-        badge={{ icono: "event_note", text: "Talleres Abiertos" }}
-        titulo={
-          <>
-            Agenda de{" "}
-            <span className="text-primary-fixed">talleres Casa SEMTA</span>
-          </>
-        }
-        descripcion="Cursos presenciales y webinars prácticos para familias, técnicos y ciudadanía. Cupos limitados, inscripción previa obligatoria."
-      />
-
-      <section className="bg-background py-16">
-        <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
-          <SectionLabel icono="calendar_month">Próximas fechas</SectionLabel>
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {agendaTalleres.map((t) => (
-              <article
-                key={t.titulo}
-                className="flex flex-col gap-5 rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-semta sm:flex-row"
-              >
-                <div className="flex sm:flex-col sm:items-center sm:justify-center rounded-2xl bg-primary-container/20 px-5 py-4 text-center">
-                  <span className="font-display-lg text-4xl font-extrabold text-primary">
-                    {t.fecha.slice(8, 10)}
-                  </span>
-                  <span className="text-label-caps uppercase tracking-wider text-on-surface-variant">
-                    {fechaLarga(t.fecha).split(" de ")[2]}
-                  </span>
-                </div>
-
-                <div className="flex flex-1 flex-col">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={cn(
-                        "rounded-full px-3 py-1 text-label-md font-semibold",
-                        estadoEstilo[t.estado],
-                      )}
-                    >
-                      {t.estado}
-                    </span>
-                    <span className="rounded-full bg-on-surface/5 px-3 py-1 text-label-md font-semibold text-on-surface-variant">
-                      {t.modalidad}
-                    </span>
-                  </div>
-                  <h3 className="mt-3 font-headline-md leading-snug text-on-surface">
-                    {t.titulo}
-                  </h3>
-                  <p className="mt-2 flex items-center gap-2 text-body-sm text-on-surface-variant">
-                    <MaterialIcon name="schedule" className="text-[18px]" />
-                    {t.hora}
-                  </p>
-                  <p className="mt-1 flex items-center gap-2 text-body-sm text-on-surface-variant">
-                    <MaterialIcon name="location_on" className="text-[18px]" />
-                    {t.lugar}
-                  </p>
-                  <p className="mt-2 text-body-sm font-semibold text-primary">
-                    Cupos: {t.cupos} participantes
-                  </p>
-                  <div className="mt-auto pt-4">
-                    <Button
-                      href="/reservar"
-                      variant={t.estado === "Convocatoria" ? "outline" : "primary"}
-                      iconRight="arrow_forward"
-                    >
-                      Reservar mi cupo
-                    </Button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+    <div className="py-16 bg-background min-h-screen">
+      <div className="mx-auto w-full max-w-container-semta px-gutter-desktop">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <SectionLabel icono="calendar_month">Calendario Institucional</SectionLabel>
+          <h1 className="mt-3 font-headline-xl text-3xl sm:text-4xl text-on-surface font-extrabold">
+            Agenda de Talleres y <span className="text-primary">Actividades</span>
+          </h1>
+          <p className="mt-3 text-body-md text-on-surface-variant">
+            Participa en nuestros espacios de formación, intercambio de semillas y jornadas
+            prácticas en comunidad.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="max-w-3xl mx-auto space-y-6">
+          {ACTIVIDADES_AGENDA.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 sm:p-8 shadow-sm transition-all hover:shadow-card-semta flex flex-col sm:flex-row sm:items-center justify-between gap-6"
+            >
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-label-xs font-bold text-primary uppercase">
+                    {item.tipo}
+                  </span>
+                  <span className="rounded-full bg-secondary/10 px-3 py-1 text-label-xs font-semibold text-secondary">
+                    {item.estado}
+                  </span>
+                </div>
+
+                <h3 className="font-bold text-xl text-on-surface">{item.titulo}</h3>
+
+                <div className="flex flex-wrap gap-4 text-body-sm text-on-surface-variant">
+                  <span className="flex items-center gap-1.5">
+                    <MaterialIcon name="calendar_today" className="text-[16px] text-primary" />
+                    {item.fecha}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MaterialIcon name="schedule" className="text-[16px] text-primary" />
+                    {item.hora}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MaterialIcon name="location_on" className="text-[16px] text-primary" />
+                    {item.lugar}
+                  </span>
+                </div>
+              </div>
+
+              <div className="shrink-0">
+                <Link href="/contacto">
+                  <Button variant="primary" size="md">
+                    Registrarme
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,49 +1,38 @@
 /**
- * images.ts
- * Utilidades para saneamiento de URLs de imágenes antes de pasarlas a next/image.
- *
- * Motivo: los proyectos reales en Firestore guardan algunas imágenes como
- * links de Google Drive ("https://drive.google.com/file/d/.../view"),
- * lo que rompe next/image en runtime. Aquí se convierten a la URL directa
- * de contenido (lh3.googleusercontent.com) que ya está en remotePatterns.
+ * src/lib/images.ts
+ * Constantes y utilidades para manejo de imágenes y fallbacks.
  */
 
 export const FALLBACK_IMAGE =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAQK5n6LW2ug_oRYK5IdsciuHh4IGzYPamNMQftWe2uDHCGiFRaenQy_906-80zMpEthY3DQqSKjB8qZNAIRbm9UkSd-jzV0DgyJHG3fJMgdZiJS_Ug4k6qxfpB_AvCh7ZtRNY0DaC4RpubslxGgmno6Lf569s6CH13a5VrOLJJ4sWS4ZkEnWIKCOkeYnM_hAZmUBnHB029RLPFhW6JMaQltvrrXFE4gw5uFbrL5XxTJkM2MBN9Nw";
+  "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80";
 
-// Hosts permitidos por next.config.mjs → images.remotePatterns
-const ALLOWED_IMAGE_HOSTS = new Set([
-  "lh3.googleusercontent.com",
-  "firebasestorage.googleapis.com",
-]);
+export const PLACEHOLDER_AVATAR =
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
 
-/** Extrae el ID de archivo de cualquier URL de Google Drive conocida. */
-function extractDriveFileId(url: string): string | null {
-  // https://drive.google.com/file/d/{ID}/view?usp=drive_link
-  const fileMatch = url.match(/\/file\/d\/([^/?]+)/);
-  if (fileMatch) return fileMatch[1];
-  // https://drive.google.com/open?id={ID}  |  /uc?export=view&id={ID}  |  /thumbnail?id={ID}
-  const idMatch = url.match(/[?&]id=([^&#]+)/);
-  if (idMatch) return idMatch[1];
-  return null;
-}
+/** Hosts cuya URL se sirve tal cual (solo se valida el hostname). */
+export const ALLOWED_IMAGE_HOSTS = ["lh3.googleusercontent.com", "firebasestorage.googleapis.com"];
 
 /**
- * Normaliza una URL de imagen para next/image:
- * - Convierte links de Google Drive a la URL directa de contenido.
- * - Si el host no está en remotePatterns (o la URL es basura), devuelve un placeholder.
+ * Normaliza una URL de imagen:
+ * - null/undefined/vacío o no-URL → FALLBACK_IMAGE
+ * - Google Drive (/file/d/{id}, /open?id=, /uc?...id=) → lh3 directo
+ * - hosts permitidos → sin cambios
+ * - cualquier otro host → FALLBACK_IMAGE
  */
 export function normalizeImageUrl(src: string | null | undefined): string {
   if (!src) return FALLBACK_IMAGE;
+
+  const driveFile = src.match(/drive\.google\.com\/file\/d\/([^/?#]+)/);
+  if (driveFile) return `https://lh3.googleusercontent.com/d/${driveFile[1]}`;
+
+  const driveId = src.match(/drive\.google\.com\/\S*[?&]id=([^&#]+)/);
+  if (driveId) return `https://lh3.googleusercontent.com/d/${driveId[1]}`;
+
   try {
-    const u = new URL(src);
-    if (u.hostname === "drive.google.com") {
-      const id = extractDriveFileId(src);
-      return id ? `https://lh3.googleusercontent.com/d/${id}` : FALLBACK_IMAGE;
-    }
-    if (ALLOWED_IMAGE_HOSTS.has(u.hostname)) return src;
+    const url = new URL(src);
+    if (ALLOWED_IMAGE_HOSTS.includes(url.hostname)) return src;
   } catch {
-    // URL no parseable
+    /* no es URL válida → fallback */
   }
   return FALLBACK_IMAGE;
 }

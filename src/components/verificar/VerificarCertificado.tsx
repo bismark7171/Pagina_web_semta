@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { cn } from "@/lib/utils";
 
+import { CertificadoHolografico } from "./CertificadoHolografico";
+
 type Resultado =
   | { tipo: "vacio" }
   | { tipo: "valido"; emitido: string; titular: string; programa: string }
@@ -71,24 +73,37 @@ export default function VerificarCertificado() {
       </form>
 
       {resultado.tipo === "valido" && (
-        <div className="mt-6 flex items-start gap-4 rounded-3xl border border-primary/40 bg-primary/5 p-6">
-          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-primary text-on-primary">
-            <MaterialIcon name="verified" className="text-[26px]" />
-          </span>
-          <div>
-            <p className="text-label-caps uppercase tracking-wider text-primary">
-              Certificado válido
-            </p>
-            <p className="mt-1 font-headline-md text-on-surface">Documento autenticado por SEMTA</p>
-            <dl className="mt-3 space-y-1 text-body-sm text-on-surface-variant">
-              <dt className="font-semibold text-on-surface">Código</dt>
-              <dd>{resultado.titular}</dd>
-              <dt className="mt-2 font-semibold text-on-surface">Programa</dt>
-              <dd>{resultado.programa}</dd>
-              <dt className="mt-2 font-semibold text-on-surface">Emisión</dt>
-              <dd>{resultado.emitido}</dd>
-            </dl>
+        <div className="space-y-6">
+          <div className="mt-6 flex items-start gap-4 rounded-3xl border border-primary/40 bg-primary/5 p-6">
+            <span className="grid size-12 shrink-0 place-items-center rounded-full bg-primary text-on-primary">
+              <MaterialIcon name="verified" className="text-[26px]" />
+            </span>
+            <div>
+              <p className="text-label-caps uppercase tracking-wider text-primary">
+                Certificado válido
+              </p>
+              <p className="mt-1 font-headline-md text-on-surface">
+                Documento autenticado por SEMTA
+              </p>
+              <dl className="mt-3 space-y-1 text-body-sm text-on-surface-variant">
+                <dt className="font-semibold text-on-surface">Código</dt>
+                <dd>{resultado.titular}</dd>
+                <dt className="mt-2 font-semibold text-on-surface">Programa</dt>
+                <dd>{resultado.programa}</dd>
+                <dt className="mt-2 font-semibold text-on-surface">Emisión</dt>
+                <dd>{resultado.emitido}</dd>
+              </dl>
+            </div>
           </div>
+
+          {/* Credencial holográfica interactiva y descargable con Canvas */}
+          <CertificadoHolografico
+            codigo={resultado.titular}
+            titular={resultado.titular}
+            programa={resultado.programa}
+            emitido={resultado.emitido}
+            horas={340}
+          />
         </div>
       )}
 

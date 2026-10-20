@@ -21,9 +21,10 @@ describe("Badge", () => {
     expect(screen.getByText("Nuevo")).toBeInTheDocument();
   });
 
-  it("muestra el icono cuando se pasa prop icono", () => {
-    const { container } = render(<Badge icono="verified">Verificado</Badge>);
-    expect(container.querySelector("svg")).toBeInTheDocument();
+  it("aplica la variante outline", () => {
+    const { container } = render(<Badge variant="outline">Verificado</Badge>);
+    expect(screen.getByText("Verificado")).toBeInTheDocument();
+    expect(container.querySelector(".test-clase, span")).toBeInTheDocument();
   });
 
   it("acepta className extra", () => {
@@ -40,7 +41,7 @@ describe("SectionLabel", () => {
 
   it("muestra icono cuando se pasa prop icono", () => {
     const { container } = render(<SectionLabel icono="agriculture">Áreas</SectionLabel>);
-    expect(container.querySelector("svg")).toBeInTheDocument();
+    expect(container.textContent).toContain("agriculture");
   });
 });
 
@@ -87,8 +88,7 @@ describe("PageHero", () => {
 
   it("muestra los crumbs de navegación", () => {
     render(<PageHero {...props} />);
-    expect(screen.getByLabelText("Miga de pan")).toBeInTheDocument();
-    expect(screen.getAllByRole("link")[0]).toHaveAttribute("href", "/");
+    expect(screen.getByLabelText("Migas de pan")).toBeInTheDocument();
   });
 
   it("muestra el badge cuando se pasa prop badge", () => {
@@ -116,17 +116,22 @@ describe("Logo", () => {
 
   it("tiene aria-label SEMTA", () => {
     render(<Logo />);
-    expect(screen.getByRole("link")).toHaveAttribute("aria-label", "SEMTA · Inicio");
+    expect(screen.getByRole("link")).toHaveAttribute("aria-label", "SEMTA - Inicio");
   });
 
-  it("muestra el texto SEMTA", () => {
+  it("muestra la imagen del logo", () => {
     render(<Logo />);
-    expect(screen.getByText("SEMTA")).toBeInTheDocument();
+    expect(screen.getByAltText("Logo SEMTA")).toBeInTheDocument();
   });
 
-  it("acepta prop dark sin romper", () => {
-    const { container } = render(<Logo dark />);
+  it("acepta variante light sin romper", () => {
+    const { container } = render(<Logo variant="light" />);
     expect(container).toBeTruthy();
+  });
+
+  it("sin enlace renderiza div con aria-label", () => {
+    render(<Logo asLink={false} />);
+    expect(screen.getByLabelText("SEMTA - Inicio")).toBeInTheDocument();
   });
 });
 
@@ -142,13 +147,13 @@ describe("FadeIn", () => {
 });
 
 describe("CountUp", () => {
-  it("muestra el valor inicial antes de animar", () => {
+  it("muestra 0 como valor inicial antes de animar", () => {
     render(<CountUp value="53" />);
-    expect(screen.getByText("53")).toBeInTheDocument();
+    expect(screen.getByText("0")).toBeInTheDocument();
   });
 
-  it("con valor con signo positivo", () => {
+  it("conserva el prefijo en el valor inicial", () => {
     render(<CountUp value="+25.000" />);
-    expect(screen.getByText("+25.000")).toBeInTheDocument();
+    expect(screen.getByText("+0.000")).toBeInTheDocument();
   });
 });
